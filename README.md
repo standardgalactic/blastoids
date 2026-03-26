@@ -4,6 +4,10 @@
 
 [Interactive Explorer](https://standardgalactic.github.io/blastoids/) — *Under Development*
 
+An Interactive Evolutionary Selection System Over a Synthetically Generated Image Corpus
+
+[Formal Architecture](https://standardgalactic.github.io/blastoids/blastoids.pdf) 
+
 An evolutionary image selection system with a green monochrome CRT aesthetic. You rate images, the system learns a preference field, breeds new variants from your top-rated images, and gradually shifts what it shows you toward what you seem to want. It runs entirely in the browser with no server required at runtime.
 
 ---
