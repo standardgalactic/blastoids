@@ -1,0 +1,1428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Blastoids Pic Breeder</title>
+<style>
+:root{
+  --bg:#020703;
+  --bg2:#06110a;
+  --panel:rgba(0,14,0,.72);
+  --line:#66ff99;
+  --line2:#2f7f4c;
+  --bright:#c7ffd8;
+  --dim:#78b88f;
+  --shadow:rgba(100,255,160,.16);
+  --warn:#aaff44;
+  --bred:#44ffdd;
+}
+*{box-sizing:border-box}
+html,body{
+  margin:0;width:100%;height:100%;overflow:hidden;
+  background:radial-gradient(circle at 50% 40%, #0a1b12 0%, #041009 38%, #010301 100%);
+  color:var(--line);
+  font-family:Consolas,"Courier New",monospace;
+}
+body::before{
+  content:"";position:fixed;inset:0;pointer-events:none;
+  background:repeating-linear-gradient(
+    to bottom,
+    rgba(255,255,255,.028) 0px,rgba(255,255,255,.028) 1px,
+    rgba(0,0,0,.09) 2px,rgba(0,0,0,.09) 3px
+  );
+  mix-blend-mode:screen;opacity:.45;
+}
+body::after{
+  content:"";position:fixed;inset:0;pointer-events:none;
+  background:radial-gradient(circle at center, transparent 58%, rgba(0,0,0,.3) 100%);
+}
+#app{position:relative;width:100%;height:100%}
+canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+
+/* ── HUD ── */
+#hud{
+  position:absolute;top:12px;left:12px;
+  width:min(380px,calc(100vw - 24px));
+  background:var(--panel);
+  border:1px solid var(--line2);
+  box-shadow:0 0 20px var(--shadow),inset 0 0 20px rgba(0,255,128,.03);
+  padding:10px 12px;backdrop-filter:blur(1px);z-index:10;
+}
+#hud .title{
+  font-size:14px;letter-spacing:1px;color:var(--bright);margin-bottom:8px;
+}
+#hud .row{
+  display:flex;justify-content:space-between;gap:8px;
+  font-size:11px;line-height:1.5;
+}
+#hud .row.bred-row{ color:var(--bred); }
+#hud .bar{
+  position:relative;height:6px;margin:8px 0 2px;
+  border:1px solid var(--line2);background:rgba(0,0,0,.35);overflow:hidden;
+}
+#hud .bar>div{
+  height:100%;width:0%;
+  background:linear-gradient(90deg,rgba(102,255,153,.25),rgba(102,255,153,.95));
+  box-shadow:0 0 10px rgba(102,255,153,.35);
+  transition:width .4s ease;
+}
+.small{font-size:10px;color:var(--dim)}
+.sep{height:1px;background:linear-gradient(90deg,transparent,var(--line2),transparent);margin:7px 0}
+
+/* ── CONTROLS ── */
+#controls{
+  position:absolute;left:50%;bottom:10px;transform:translateX(-50%);
+  display:flex;flex-wrap:wrap;justify-content:center;gap:7px;
+  z-index:10;width:min(1100px,calc(100vw - 24px));
+}
+.btn{
+  appearance:none;border:1px solid var(--line);background:rgba(0,0,0,.42);
+  color:var(--line);padding:9px 11px;min-width:96px;
+  font:inherit;font-size:11px;letter-spacing:.6px;cursor:pointer;text-transform:uppercase;
+  box-shadow:0 0 8px rgba(102,255,153,.06),inset 0 0 14px rgba(102,255,153,.02);
+  transition:background .1s,color .1s,box-shadow .1s;
+}
+.btn:hover{background:rgba(0,255,120,.08);color:var(--bright)}
+.btn:active{transform:translateY(1px)}
+.btn.active{
+  background:rgba(0,255,120,.12);color:var(--bright);
+  box-shadow:0 0 16px rgba(102,255,153,.18),inset 0 0 20px rgba(102,255,153,.07);
+}
+.btn.bred-btn{border-color:var(--bred);color:var(--bred)}
+.btn.bred-btn:hover{background:rgba(44,255,220,.07);color:#aaffee}
+
+/* ── SIDE PANEL ── */
+#side{
+  position:absolute;top:12px;right:12px;
+  width:min(440px,calc(100vw - 24px));
+  max-height:calc(100vh - 24px);overflow:auto;
+  background:var(--panel);border:1px solid var(--line2);
+  box-shadow:0 0 20px var(--shadow),inset 0 0 20px rgba(0,255,128,.03);
+  padding:10px 10px 12px;z-index:10;display:none;
+}
+#side.show{display:block}
+#sideHeader{
+  display:flex;justify-content:space-between;align-items:center;
+  gap:8px;margin-bottom:8px;font-size:12px;color:var(--bright);
+}
+.tab-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+@media(max-width:600px){.grid{grid-template-columns:repeat(2,1fr)}}
+.thumb{
+  position:relative;border:1px solid var(--line2);background:#000;
+  aspect-ratio:4/3;overflow:hidden;cursor:pointer;
+}
+.thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.thumb.is-bred{border-color:var(--bred)}
+/* Ghost overlay: parent images flicker through on hover */
+.thumb.is-bred .ghost{
+  position:absolute;inset:0;
+  background-size:cover;background-position:center;
+  opacity:0;pointer-events:none;
+  transition:opacity .08s step-end;
+}
+.thumb.is-bred:hover .ghost{ opacity:0.72; }
+.thumb .meta{
+  position:absolute;left:0;right:0;bottom:0;font-size:9px;
+  background:linear-gradient(to top,rgba(0,0,0,.88),rgba(0,0,0,.12));
+  color:var(--bright);padding:5px 5px 4px;
+}
+.thumb.is-bred .meta{color:var(--bred)}
+.thumb:hover{box-shadow:0 0 12px rgba(102,255,153,.2)}
+
+/* ── BREED NOTICE ── */
+#breedNotice{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  background:rgba(0,10,4,.92);border:1px solid var(--bred);
+  color:var(--bred);font-size:13px;letter-spacing:1px;
+  padding:12px 20px;z-index:20;pointer-events:none;
+  opacity:0;transition:opacity .25s;
+}
+#breedNotice.show{opacity:1}
+
+/* ── CENTER LABEL ── */
+#centerLabel{
+  position:absolute;left:50%;top:18px;transform:translateX(-50%);
+  z-index:9;font-size:13px;color:var(--bright);letter-spacing:1px;
+  text-shadow:0 0 8px rgba(102,255,153,.25);pointer-events:none;
+  white-space:nowrap;
+}
+
+#help{
+  position:absolute;left:12px;bottom:82px;z-index:10;
+  font-size:10px;color:var(--dim);
+  background:rgba(0,10,0,.45);border:1px solid rgba(47,127,76,.55);
+  padding:6px 9px;max-width:min(520px,calc(100vw - 24px));
+}
+.hide-ui #hud,.hide-ui #controls,.hide-ui #side,.hide-ui #help{display:none!important}
+</style>
+</head>
+<body>
+<div id="app">
+  <canvas id="bg"></canvas>
+  <canvas id="main"></canvas>
+
+  <div id="centerLabel">SLIDESHOW TARGETING MODE</div>
+  <div id="breedNotice"></div>
+
+  <div id="hud">
+    <div class="title">◈ BLASTOIDS PIC BREEDER</div>
+    <div class="row"><span>MODE</span><span id="hudMode">SLIDESHOW</span></div>
+    <div class="row"><span>TARGET</span><span id="hudIndex">0 / 0</span></div>
+    <div class="row"><span>VIEWED</span><span id="hudViewed">0</span></div>
+    <div class="row"><span>AWESOME / OK / HORRIBLE</span><span id="hudCounts">0 / 0 / 0</span></div>
+    <div class="row bred-row"><span>FIELD TARGETS (BRED)</span><span id="hudOffspring">0</span></div>
+    <div class="row bred-row"><span>BRED TARGETS SHOWN</span><span id="hudOffspringShown">0</span></div>
+    <div class="row"><span>PREFERENCE Φ</span><span id="hudSignal">0.000</span></div>
+    <div class="row"><span>TEMPERATURE</span><span id="hudTemp">0.000</span></div>
+    <div class="row small" style="color:var(--bred)"><span>FIELD →</span><span id="hudFieldConcept" style="text-align:right;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">—</span></div>
+    <div class="bar"><div id="progressBar"></div></div>
+    <div class="small" id="hudStatus">System initialized.</div>
+    <div class="sep"></div>
+    <div class="small" id="hudLineage">LINEAGE: —</div>
+  </div>
+
+  <div id="side">
+    <div id="sideHeader">
+      <span id="sideTitle">TOP SET</span>
+      <button class="btn" id="closeSideBtn">CLOSE</button>
+    </div>
+    <div class="tab-row">
+      <button class="btn" id="showTopBtn">TOP</button>
+      <button class="btn" id="showWorstBtn">WORST</button>
+      <button class="btn bred-btn" id="showBredBtn">BRED</button>
+    </div>
+    <div class="sep"></div>
+    <div class="grid" id="thumbGrid"></div>
+  </div>
+
+  <div id="controls">
+    <button class="btn" id="awesomeBtn">AWESOME [1]</button>
+    <button class="btn" id="okBtn">OK [2]</button>
+    <button class="btn" id="horribleBtn">HORRIBLE [3]</button>
+    <button class="btn" id="nextBtn">NEXT [→]</button>
+    <button class="btn" id="modeBtn">MODE [M]</button>
+    <button class="btn" id="topBtn">TOP [T]</button>
+    <button class="btn" id="worstBtn">WORST [W]</button>
+    <button class="btn bred-btn" id="breedBtn">BREED [B]</button>
+    <button class="btn bred-btn" id="showBredBtnMain">BRED [O]</button>
+    <button class="btn" id="pauseBtn">PAUSE [SPC]</button>
+    <button class="btn" id="hideUiBtn">HIDE [H]</button>
+    <button class="btn" id="resetBtn">RESET</button>
+  </div>
+
+  <div id="help">
+    1/2/3 = AWESOME/OK/HORRIBLE &nbsp;·&nbsp; B = ACQUIRE BRED TARGETS from field &nbsp;·&nbsp;
+    O = inspect bred targets &nbsp;·&nbsp; T/W = top/worst &nbsp;·&nbsp; M = mode &nbsp;·&nbsp;
+    SPC = pause &nbsp;·&nbsp; H = hide UI. Bred targets inherit interpolated latent vectors. Hover a bred thumbnail to ghost its parents.
+  </div>
+</div>
+
+<script>
+/* ══════════════════════════════════════════════
+   CONFIG
+══════════════════════════════════════════════ */
+// ── LOCAL CORPUS ─────────────────────────────────────────────────────────────
+// 5000 images split across images/a (1–2500) and images/b (2501–5000).
+// Thumbnails at 140×140 mirror the same split under images/thumbnails/a and /b.
+// Filenames: blastoids_00001_.png … blastoids_05000_.png (5-digit zero-padded).
+
+function corpusNum(n){ return String(n).padStart(5,'0'); }
+
+function corpusImageUrl(n){
+  const folder = n <= 2500 ? 'a' : 'b';
+  return `images/${folder}/blastoids_${corpusNum(n)}_.png`;
+}
+
+function corpusThumbUrl(n){
+  const folder = n <= 2500 ? 'a' : 'b';
+  return `images/thumbnails/${folder}/blastoids_${corpusNum(n)}_.png`;
+}
+
+const CORPUS_COUNT = 5000;
+const IMAGE_URLS = Array.from({length: CORPUS_COUNT}, (_, i) => corpusImageUrl(i + 1));
+
+// LATENT_DIM starts at 16 (pseudo-random fallback).
+// If a CLIP sidecar is loaded, this is updated to match the embedding dim.
+let LATENT_DIM = 16;
+const TOP_N          = 100;
+const WORST_N        = 100;
+const AUTOPLAY_MS    = 2800;
+const STORAGE_KEY    = "blastoids_state_v1";
+// Path to the precomputed CLIP embedding sidecar produced by blastoids_embed.py.
+// Set to null to disable and use pseudo-random latent vectors.
+const EMBEDDINGS_URL = "blastoids_embeddings.json";
+
+// Offspring config
+const MAX_OFFSPRING       = 120;
+const OFFSPRING_PER_BREED = 12;
+const OFFSPRING_MIX_RATIO = 0.22;
+// Decay applied to offspring score per breed generation (not calendar time).
+// Each B-press increments breedGeneration; offspring score is penalised by
+// (breedGeneration - item.generation) * OFFSPRING_DECAY_RATE.
+// Keeps early sediment from competing forever with fresher targets.
+const OFFSPRING_DECAY_RATE = 0.04;
+const CROP_QUADRANTS = [[0,0],[1,0],[0,1],[1,1]];
+
+// Temperature
+const T_MAX = 1.55;
+const T_MIN = 0.42;  // raised from 0.32 — CLIP alignment is strong enough that
+                     // lower floors cause premature convergence
+const T_TAU = 180;
+// Weight of CLIP alignment in itemScore. In pseudo-latent space this can be
+// aggressive; in CLIP space the signal is meaningful and will dominate if left
+// at 1.0. 0.55 keeps alignment competitive with novelty without locking the
+// field after just a few strong ratings.
+const ALIGN_WEIGHT = 0.55;
+
+/* ══════════════════════════════════════════════
+   UTILS
+══════════════════════════════════════════════ */
+function clamp(x,a,b){return Math.max(a,Math.min(b,x))}
+function randHash(n){const x=Math.sin(n*12.9898+78.233)*43758.5453123;return x-Math.floor(x)}
+function makeVector(seed,dim){
+  const v=[];
+  for(let i=0;i<dim;i++) v.push(randHash(seed*1000+i*97.13)*2-1);
+  return normalize(v);
+}
+function dot(a,b){let s=0;for(let i=0;i<a.length;i++)s+=a[i]*b[i];return s}
+function normalize(v){
+  let s=0;for(let i=0;i<v.length;i++)s+=v[i]*v[i];
+  s=Math.sqrt(s)||1;for(let i=0;i<v.length;i++)v[i]/=s;return v;
+}
+function vecAdd(a,b,alpha=1){
+  const out=a.slice();for(let i=0;i<out.length;i++)out[i]+=b[i]*alpha;return out;
+}
+function vecLerp(a,b,t){
+  return a.map((v,i)=>v+(b[i]-v)*t);
+}
+function vecScale(v,s){return v.map(x=>x*s)}
+function softmaxSample(indices,logits,temperature=1){
+  const t=Math.max(0.04,temperature);
+  let max=-Infinity;for(const l of logits)if(l>max)max=l;
+  const exps=logits.map(x=>Math.exp((x-max)/t));
+  const sum=exps.reduce((a,b)=>a+b,0)||1;
+  let r=Math.random()*sum;
+  for(let i=0;i<exps.length;i++){r-=exps[i];if(r<=0)return indices[i];}
+  return indices[indices.length-1];
+}
+function shuffle(arr){
+  const a=arr.slice();
+  for(let i=a.length-1;i>0;i--){const j=(Math.random()*(i+1))|0;[a[i],a[j]]=[a[j],a[i]];}
+  return a;
+}
+
+/* ══════════════════════════════════════════════
+   GRAYSCALE FILTER — applied to specific rect
+══════════════════════════════════════════════ */
+function applyMonochromeRect(ctx, dx, dy, dw, dh){
+  dx=Math.round(dx); dy=Math.round(dy);
+  dw=Math.round(dw); dh=Math.round(dh);
+  if(dw<=0||dh<=0)return;
+  const id=ctx.getImageData(dx,dy,dw,dh);
+  const d=id.data;
+  for(let i=0;i<d.length;i+=4){
+    const r=d[i],g=d[i+1],b=d[i+2];
+    let y=0.299*r+0.587*g+0.114*b;
+    y=Math.pow(y/255,0.88)*255;
+    d[i]  =y*0.72;
+    d[i+1]=Math.min(255,y*1.12);
+    d[i+2]=y*0.60;
+  }
+  ctx.putImageData(id,dx,dy);
+}
+
+/* ══════════════════════════════════════════════
+   IMAGE ITEM
+══════════════════════════════════════════════ */
+let _idCounter = 0;
+function makeItem(url, latent, isOffspring=false, parents=null, mutationType=null){
+  return {
+    id: _idCounter++,
+    url,
+    img: null,
+    loaded: false,
+    failed: false,
+    latent,
+    rating: 0,
+    label: null,   // 'awesome' | 'ok' | 'horrible' — categorical, decoupled from scalar
+    seen: 0,
+    score: 0,
+    timestamp: 0,
+    isOffspring,
+    parents,
+    mutationType,
+    generation: 0  // breedGeneration at time of creation; used for age decay
+  };
+}
+
+/* ══════════════════════════════════════════════
+   DATASET
+══════════════════════════════════════════════ */
+const baseItems = IMAGE_URLS.map((url, i) => {
+  const item = makeItem(url, makeVector(i + 1, LATENT_DIM));
+  item.thumbUrl = corpusThumbUrl(i + 1);  // 140×140 thumbnail path
+  return item;
+});
+let offspringItems = [];  // bred items
+
+// O(1) lookup index — kept in sync whenever items are created
+const itemIndex = new Map();
+function indexItem(it){ itemIndex.set(it.id, it); }
+baseItems.forEach(indexItem);
+
+function allItems(){ return [...baseItems, ...offspringItems]; }
+function itemById(id){ return itemIndex.get(id)||null; }
+
+/* ══════════════════════════════════════════════
+   STATE
+══════════════════════════════════════════════ */
+let mode="slideshow", paused=false;
+let currentItemId = baseItems[0].id;
+let counts={awesome:0,ok:0,horrible:0};
+let preferenceVector = new Array(LATENT_DIM).fill(0);
+let currentQueue=[], currentQueuePos=0;
+let shownSideKind="top";
+let lastStatus="System initialized.";
+let offspringShownCount=0;
+let breedGeneration=0;  // increments each B-press; used for offspring age decay
+
+/* ══════════════════════════════════════════════
+   PERSISTENCE
+══════════════════════════════════════════════ */
+function collectRatings(){
+  const out={};
+  for(const it of allItems()) if(it.rating!==0||it.seen>0) out[it.id]={r:it.rating,l:it.label,s:it.seen};
+  return out;
+}
+function serializeOffspring(){
+  return offspringItems.map(it=>({
+    id:it.id,url:it.url,latent:it.latent,rating:it.rating,label:it.label,seen:it.seen,
+    parents:it.parents,mutationType:it.mutationType,generation:it.generation||0
+  }));
+}
+function saveState(){
+  try{
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({
+      mode,paused,currentItemId,counts,preferenceVector,
+      currentQueue,currentQueuePos,shownSideKind,lastStatus,offspringShownCount,
+      breedGeneration,
+      ratings: collectRatings(),
+      offspring: serializeOffspring(),
+      idCounter: _idCounter
+    }));
+  }catch(e){/* storage full — ignore */}
+}
+function loadState(){
+  try{ return JSON.parse(localStorage.getItem(STORAGE_KEY)); }
+  catch{ return null; }
+}
+function hydrateFromState(){
+  const st=loadState();
+  if(!st)return;
+  if(st.idCounter) _idCounter=st.idCounter;
+  if(st.mode) mode=st.mode;
+  if(typeof st.paused==="boolean") paused=st.paused;
+  if(st.counts) counts=st.counts;
+  if(Array.isArray(st.preferenceVector)&&st.preferenceVector.length===LATENT_DIM){
+    preferenceVector=st.preferenceVector.slice();
+  } else if(Array.isArray(st.preferenceVector)&&st.preferenceVector.length!==LATENT_DIM){
+    // Saved vector is wrong dimension (e.g. pseudo→CLIP upgrade). Drop it;
+    // startup() will rebuild from ratings after embeddings load.
+    lastStatus="Dimension mismatch: preference vector reset. Will rebuild from ratings.";
+  }
+  if(Array.isArray(st.currentQueue)) currentQueue=st.currentQueue;
+  if(Number.isInteger(st.currentQueuePos)) currentQueuePos=st.currentQueuePos;
+  if(st.shownSideKind) shownSideKind=st.shownSideKind;
+  if(st.lastStatus) lastStatus=st.lastStatus;
+  if(Number.isInteger(st.offspringShownCount)) offspringShownCount=st.offspringShownCount;
+  if(Number.isInteger(st.breedGeneration)) breedGeneration=st.breedGeneration;
+
+  // restore ratings onto base items
+  if(st.ratings){
+    for(const it of baseItems){
+      const saved=st.ratings[it.id];
+      if(saved){ it.rating=saved.r||0; it.label=saved.l||null; it.seen=saved.s||0; }
+    }
+  }
+
+  // restore offspring
+  if(Array.isArray(st.offspring)){
+    for(const o of st.offspring){
+      const it=makeItem(o.url, o.latent, true, o.parents, o.mutationType);
+      it.id=o.id;
+      it.rating=o.rating||0;
+      it.label=o.label||null;
+      it.seen=o.seen||0;
+      it.generation=o.generation||0;
+      const saved=st.ratings&&st.ratings[o.id];
+      if(saved){ it.rating=saved.r||0; it.label=saved.l||null; it.seen=saved.s||0; }
+      offspringItems.push(it);
+      indexItem(it);
+    }
+  }
+
+  if(Number.isInteger(st.currentItemId)){
+    if(itemIndex.has(st.currentItemId)) currentItemId=st.currentItemId;
+  }
+}
+hydrateFromState();
+
+/* ══════════════════════════════════════════════
+   IMAGE LOADING
+══════════════════════════════════════════════ */
+function ensureLoaded(item){
+  if(!item||item.img||item.failed)return;
+  const img=new Image();
+  img.crossOrigin="anonymous";
+  img.onload=()=>{item.loaded=true;};
+  img.onerror=()=>{item.failed=true;};
+  img.src=item.url;
+  item.img=img;
+}
+baseItems.slice(0,24).forEach(ensureLoaded);
+offspringItems.slice(0,12).forEach(ensureLoaded);
+
+function preloadAround(item, radius=14){
+  const all=allItems();
+  const idx=all.indexOf(item);
+  if(idx<0)return;
+  for(let d=-radius;d<=radius;d++){
+    const i=(idx+d+all.length)%all.length;
+    ensureLoaded(all[i]);
+  }
+}
+
+/* ══════════════════════════════════════════════
+   PREFERENCE VECTOR
+══════════════════════════════════════════════ */
+function rebuildPreferenceVector(){
+  const pv=new Array(LATENT_DIM).fill(0);
+  let mass=0;
+  for(const it of allItems()){
+    if(it.rating===0)continue;
+    const w=it.rating>0?(1.5+0.12*Math.abs(it.rating)):-(1.5+0.12*Math.abs(it.rating));
+    for(let d=0;d<LATENT_DIM;d++) pv[d]+=it.latent[d]*w;
+    mass+=Math.abs(w);
+  }
+  if(mass>0) normalize(pv);
+  preferenceVector=pv;
+  // Reset concept label tracking so it re-evaluates from scratch
+  _conceptBestId=null;
+  _conceptBestDot=-Infinity;
+}
+
+function itemScore(item){
+  const align=dot(item.latent,preferenceVector) * ALIGN_WEIGHT;
+  const explicit=item.rating*0.55;
+  const novelty=item.seen===0?0.38:Math.max(0,0.22-item.seen*0.025);
+  const penalty=Math.min(0.45,item.seen*0.02);
+  const offspringBonus=item.isOffspring&&item.seen===0?0.15:0;
+  const agePenalty=item.isOffspring
+    ? Math.max(0,(breedGeneration-item.generation)*OFFSPRING_DECAY_RATE)
+    : 0;
+  return align+explicit+novelty-penalty+offspringBonus-agePenalty;
+}
+
+function temperature(){
+  const rated=counts.awesome+counts.ok+counts.horrible;
+  return T_MIN+(T_MAX-T_MIN)*Math.exp(-rated/T_TAU);
+}
+
+/* ══════════════════════════════════════════════
+   THUMBNAIL CACHE
+   Offspring thumbnails are rendered once into an offscreen canvas and the
+   resulting data URL is stored on item.thumbDataUrl. Base items use their
+   URL directly. renderThumbCached is safe to call multiple times — it is
+   a no-op after the first successful render.
+══════════════════════════════════════════════ */
+const TC_W=160, TC_H=120;
+
+function renderThumbCached(it, onReady){
+  // Base items: use the pre-sized thumbnail path, not the full image
+  if(!it.isOffspring){
+    onReady(it.thumbUrl || it.url);
+    return;
+  }
+
+  // Already cached
+  if(it.thumbDataUrl){
+    onReady(it.thumbDataUrl);
+    return;
+  }
+
+  // Poll already running for this item — register callback and exit.
+  // Prevents duplicate intervals when renderSet is called again before source loads.
+  if(it.thumbPending){
+    it._thumbCallbacks = it._thumbCallbacks || [];
+    it._thumbCallbacks.push(onReady);
+    return;
+  }
+
+  // Find source image
+  const {baseUrl}=parseOffspringUrl(it.url);
+  let srcIt=null;
+  for(const b of baseItems){ if(b.url===baseUrl){ srcIt=b; break; } }
+  if(!srcIt) srcIt=it;
+  ensureLoaded(srcIt);
+
+  const doRender=()=>{
+    const tc=document.createElement("canvas");
+    tc.width=TC_W; tc.height=TC_H;
+    const tctx=tc.getContext("2d");
+    drawImageItem(tctx,it,0,0,TC_W,TC_H);
+    applyMonochromeRect(tctx,0,0,TC_W,TC_H);
+    it.thumbDataUrl=tc.toDataURL();
+    it.thumbPending=false;
+    // flush any callbacks that queued while we were waiting
+    const cbs=it._thumbCallbacks||[];
+    it._thumbCallbacks=[];
+    onReady(it.thumbDataUrl);
+    cbs.forEach(cb=>cb(it.thumbDataUrl));
+  };
+
+  if(srcIt.img&&srcIt.img.complete&&!srcIt.failed){
+    doRender();
+  } else {
+    it.thumbPending=true;
+    // Placeholder immediately, upgrade once source is ready
+    onReady(srcIt.url.split("#")[0]);
+    const poll=setInterval(()=>{
+      if(srcIt.img&&srcIt.img.complete){
+        clearInterval(poll);
+        doRender();
+      }
+    },200);
+  }
+}
+
+/* ══════════════════════════════════════════════
+   SAMPLING
+══════════════════════════════════════════════ */
+function sampleFromPool(pool){
+  if(pool.length===0) return null;
+  const indices=[],logits=[];
+  for(const it of pool){
+    const s=itemScore(it);
+    const rp=it.seen*0.06;
+    indices.push(it.id);
+    logits.push(s-rp);
+  }
+  const sampledId=softmaxSample(indices,logits,temperature());
+  return itemIndex.get(sampledId)||pool[0];
+}
+
+function chooseNext(){
+  // Explicit two-pool mixing: with probability OFFSPRING_MIX_RATIO draw from
+  // offspring pool (if non-empty), otherwise draw from base corpus.
+  // This prevents offspring frequency from swinging uncontrollably as the
+  // preference vector aligns — evolution is always present at a stable rate.
+  const useOffspring = offspringItems.length > 0
+    && Math.random() < OFFSPRING_MIX_RATIO;
+
+  if(useOffspring){
+    const result = sampleFromPool(offspringItems);
+    if(result) return result;
+  }
+  return sampleFromPool(baseItems);
+}
+
+function getRanked(kind="top"){
+  const arr=allItems().map(it=>({it,s:itemScore(it)}));
+  if(kind==="top") arr.sort((a,b)=>b.s-a.s);
+  else arr.sort((a,b)=>a.s-b.s);
+  return arr.slice(0,kind==="top"?TOP_N:WORST_N).map(x=>x.it);
+}
+
+/* ══════════════════════════════════════════════
+   OFFSPRING GENERATION
+══════════════════════════════════════════════ */
+
+/* Crop-variant: records crop rect as a hash in the URL via a fragment so
+   the canvas draw knows where to crop. Format: url#crop_qx_qy
+   where qx,qy ∈ {0,1} (quadrant). We actually synthesize by
+   reusing the parent URL and drawing a cropped region scaled up.      */
+
+function offspringUrl(parentUrl, mutationType, extra=""){
+  return parentUrl + "#" + mutationType + (extra?"_"+extra:"");
+}
+
+function parseOffspringUrl(url){
+  const hash=url.indexOf("#");
+  if(hash<0) return {baseUrl:url,mutation:null,extra:null};
+  const base=url.slice(0,hash);
+  const tag=url.slice(hash+1);
+  const parts=tag.split("_");
+  return{baseUrl:base,mutation:parts[0],extra:parts.slice(1).join("_")};
+}
+
+function breedOffspring(){
+  const top=getRanked("top").filter(it=>it.rating>0);
+  if(top.length<2){
+    showBreedNotice("NEED ≥2 AWESOME/OK ITEMS TO BREED");
+    return;
+  }
+
+  breedGeneration++;  // advance the clock before scoring so new children start fresh
+
+  // Probabilistic pruning: when near cap, cull lowest-scoring unrated offspring
+  // to make room. Rated offspring are protected — user investment is preserved.
+  if(offspringItems.length >= MAX_OFFSPRING * 0.85){
+    const unrated=offspringItems
+      .filter(it=>it.label===null)
+      .sort((a,b)=>itemScore(a)-itemScore(b));
+    const toPrune=Math.min(
+      Math.ceil(OFFSPRING_PER_BREED * 0.5),
+      unrated.length
+    );
+    for(let i=0;i<toPrune;i++){
+      const victim=unrated[i];
+      offspringItems.splice(offspringItems.indexOf(victim),1);
+      itemIndex.delete(victim.id);
+    }
+    if(toPrune>0) lastStatus=`Pruned ${toPrune} low-score targets to make room.`;
+  }
+
+  let created=0;
+  const attempts=OFFSPRING_PER_BREED*3;
+
+  for(let attempt=0;attempt<attempts&&created<OFFSPRING_PER_BREED;attempt++){
+    if(offspringItems.length>=MAX_OFFSPRING) break;
+
+    // pick two distinct parents from top set, weighted by score
+    const scores=top.map(it=>Math.max(0.05,itemScore(it)));
+    const sum=scores.reduce((a,b)=>a+b,0);
+    let r=Math.random()*sum, pIdx=0;
+    for(;pIdx<scores.length-1;pIdx++){r-=scores[pIdx];if(r<=0)break;}
+    let qIdx=pIdx;
+    while(qIdx===pIdx) qIdx=(Math.random()*top.length)|0;
+
+    const pa=top[pIdx];
+    const pb=top[qIdx];
+
+    // Mutation probabilities drift with breedGeneration:
+    // blend grows from 35% toward 55% as generations accumulate, at the
+    // expense of crop. Color shift stays fixed. This shifts the population
+    // from "zooming into good regions" toward "synthesizing new combinations"
+    // as the field matures and has more interesting material to combine.
+    const blendProb = Math.min(0.55, 0.35 + breedGeneration * 0.015);
+    const cropProb  = Math.max(0.20, 0.45 - breedGeneration * 0.015);
+    // colorshift gets remainder: starts ~0.20, stable around 0.15 at gen 5+
+    const mutRoll=Math.random();
+    let mutationType, url, extraLatentNoise=0.08;
+
+    if(mutRoll < cropProb){
+      // crop: encode quadrant + soft bounds as percentages so draw is deterministic
+      const q=CROP_QUADRANTS[(Math.random()*4)|0];
+      const cwPct=(0.45+Math.random()*0.20).toFixed(3);
+      const chPct=(0.45+Math.random()*0.20).toFixed(3);
+      mutationType=`crop-${q[0]}-${q[1]}-${cwPct}-${chPct}`;
+      url=offspringUrl(pa.url,mutationType);
+    } else if(mutRoll < cropProb + blendProb){
+      // blend: encode blend ratio into fragment
+      const alpha=(0.3+Math.random()*0.4).toFixed(2);
+      mutationType=`blend-${alpha}`;
+      url=offspringUrl(pa.url, mutationType, pb.id);
+      extraLatentNoise=0.05;
+    } else {
+      // color temperature shift (warm/cool)
+      const shift=Math.random()<0.5?"warm":"cool";
+      mutationType=`colorshift-${shift}`;
+      url=offspringUrl(pa.url,mutationType);
+      extraLatentNoise=0.12;
+    }
+
+    // latent = lerp(pa, pb, t) + small noise
+    const t=0.3+Math.random()*0.4;
+    let lv=vecLerp(pa.latent,pb.latent,t);
+    for(let d=0;d<LATENT_DIM;d++) lv[d]+=( Math.random()*2-1)*extraLatentNoise;
+    normalize(lv);
+
+    const child=makeItem(url,lv,true,[pa.id,pb.id],mutationType);
+    child.generation=breedGeneration;
+    offspringItems.push(child);
+    indexItem(child);
+    created++;
+  }
+
+  showBreedNotice(`${created} TARGETS ACQUIRED FROM FIELD`);
+  lastStatus=`Field produced ${created} bred targets.`;
+  updateHUD();
+  saveState();
+}
+
+function showBreedNotice(msg){
+  const el=document.getElementById("breedNotice");
+  el.textContent=msg;
+  el.classList.add("show");
+  setTimeout(()=>el.classList.remove("show"),1800);
+}
+
+/* ══════════════════════════════════════════════
+   CANVAS DRAW — offspring-aware
+══════════════════════════════════════════════ */
+
+// For blend mutations we need the secondary parent's image
+function resolveParentImg(parentId){
+  const it=itemById(parentId);
+  if(!it)return null;
+  ensureLoaded(it);
+  return it;
+}
+
+function drawImageItem(ctx, item, dx, dy, dw, dh){
+  const {baseUrl, mutation, extra}=parseOffspringUrl(item.url);
+
+  // resolve source item via index — fall back to scanning base items by URL
+  let srcItem=null;
+  if(!mutation){
+    srcItem=item;
+  } else {
+    for(const it of baseItems){ if(it.url===baseUrl){ srcItem=it; break; } }
+    if(!srcItem) srcItem=item;
+  }
+  ensureLoaded(srcItem);
+  const img=srcItem.img;
+  if(!img||!img.complete||srcItem.failed)return false;
+
+  const iw=img.naturalWidth||1;
+  const ih=img.naturalHeight||1;
+
+  ctx.save();
+
+  if(!mutation){
+    // plain image
+    ctx.drawImage(img,dx,dy,dw,dh);
+
+  } else if(mutation.startsWith("crop")){
+    // crop-qx-qy-cwPct-chPct : stable soft crop encoded at breed time
+    const parts=mutation.split("-");
+    const qx=parseInt(parts[1])||0;
+    const qy=parseInt(parts[2])||0;
+    const cwPct=parseFloat(parts[3])||0.5;
+    const chPct=parseFloat(parts[4])||0.5;
+    const cw=iw*cwPct;
+    const ch=ih*chPct;
+    const sx=qx?(iw-cw):0;
+    const sy=qy?(ih-ch):0;
+    ctx.drawImage(img,sx,sy,cw,ch,dx,dy,dw,dh);
+
+  } else if(mutation.startsWith("blend")){
+    // blend-alpha : draw pa, then pb on top with alpha
+    const alpha=parseFloat(mutation.split("-")[1])||0.5;
+    ctx.drawImage(img,dx,dy,dw,dh);
+    if(extra){
+      const parentBId=parseInt(extra);
+      const pb=resolveParentImg(parentBId);
+      if(pb&&pb.img&&pb.img.complete&&!pb.failed){
+        ctx.globalAlpha=alpha;
+        ctx.drawImage(pb.img,dx,dy,dw,dh);
+        ctx.globalAlpha=1;
+      }
+    }
+
+  } else if(mutation.startsWith("colorshift")){
+    ctx.drawImage(img,dx,dy,dw,dh);
+    const shift=mutation.split("-")[1];
+    ctx.globalCompositeOperation="screen";
+    if(shift==="warm"){
+      ctx.fillStyle="rgba(80,25,0,0.14)";
+    } else {
+      ctx.fillStyle="rgba(0,15,55,0.14)";
+    }
+    ctx.fillRect(dx,dy,dw,dh);
+    ctx.globalCompositeOperation="source-over";
+  }
+
+  ctx.restore();
+  return true;
+}
+
+/* ══════════════════════════════════════════════
+   INTERACTION
+══════════════════════════════════════════════ */
+function currentItem(){
+  return itemIndex.get(currentItemId)||baseItems[0];
+}
+
+function markRating(value, label){
+  const it=currentItem();
+  const prevLabel=it.label;
+
+  if(prevLabel) counts[prevLabel]=Math.max(0,(counts[prevLabel]||0)-1);
+
+  it.rating=value;
+  it.label=label;
+  counts[label]=(counts[label]||0)+1;
+
+  it.seen=Math.max(it.seen,1);
+  it.timestamp=Date.now();
+
+  rebuildPreferenceVector();
+
+  if(mode==="slideshow") advanceNext();
+  else{ lastStatus="Rating recorded."; updateHUD(); saveState(); }
+}
+
+function advanceNext(){
+  triggerCrossfade();           // snapshot outgoing before switching
+  const next=chooseNext();
+  currentItemId=next.id;
+  next.seen+=1;
+  if(next.isOffspring) offspringShownCount++;
+  preloadAround(next,16);
+  lastStatus=`Sampler → item ${next.id}${next.isOffspring?" [BRED TARGET "+next.mutationType+"]":""}`;
+  updateHUD();
+  saveState();
+}
+
+function jumpTo(id){
+  const it=itemIndex.get(id);
+  if(!it)return;
+  currentItemId=id;
+  preloadAround(it,16);
+  lastStatus=`Jumped to item ${id}`;
+  updateHUD();
+  saveState();
+}
+
+function toggleMode(){
+  mode=mode==="slideshow"?"curate":"slideshow";
+  if(mode==="curate"){
+    paused=true;
+    const top=getRanked("top");
+    currentQueue=shuffle(top.slice(0,60)).map(x=>x.id);
+    currentQueuePos=0;
+    if(currentQueue.length) currentItemId=currentQueue[0];
+    document.getElementById("centerLabel").textContent="CURATE MODE";
+    lastStatus="Curate mode engaged.";
+  }else{
+    paused=false;
+    document.getElementById("centerLabel").textContent="SLIDESHOW TARGETING MODE";
+    lastStatus="Slideshow mode engaged.";
+  }
+  updateHUD();saveState();
+}
+
+function togglePause(){
+  paused=!paused;
+  lastStatus=paused?"Autoplay paused.":"Autoplay resumed.";
+  updateHUD();saveState();
+}
+
+function resetAll(){
+  if(!confirm("Reset all ratings, offspring, and preference state?"))return;
+  for(const it of baseItems){it.rating=0;it.seen=0;it.timestamp=0;}
+  offspringItems=[];
+  counts={awesome:0,ok:0,horrible:0};
+  preferenceVector=new Array(LATENT_DIM).fill(0);
+  currentItemId=baseItems[0].id;
+  currentQueue=[];currentQueuePos=0;
+  mode="slideshow";paused=false;
+  offspringShownCount=0;
+  document.getElementById("centerLabel").textContent="SLIDESHOW TARGETING MODE";
+  side.classList.remove("show");
+  lastStatus="State reset.";
+  localStorage.removeItem(STORAGE_KEY);
+  updateHUD();
+}
+
+/* ══════════════════════════════════════════════
+   SIDE PANEL
+══════════════════════════════════════════════ */
+const side=document.getElementById("side");
+const thumbGrid=document.getElementById("thumbGrid");
+const sideTitle=document.getElementById("sideTitle");
+
+function openSet(kind){
+  shownSideKind=kind;
+  renderSet(kind);
+  side.classList.add("show");
+  saveState();
+}
+
+function renderSet(kind){
+  let items;
+  if(kind==="offspring"){
+    items=offspringItems.slice().sort((a,b)=>itemScore(b)-itemScore(a));
+    sideTitle.textContent=`BRED TARGETS (${items.length})`;
+  }else{
+    items=getRanked(kind);
+    sideTitle.textContent=kind==="top"?`TOP ${TOP_N}`:`WORST ${WORST_N}`;
+  }
+
+  document.getElementById("showTopBtn").classList.toggle("active",kind==="top");
+  document.getElementById("showWorstBtn").classList.toggle("active",kind==="worst");
+  document.getElementById("showBredBtn").classList.toggle("active",kind==="offspring");
+
+  thumbGrid.innerHTML="";
+  items.forEach(it=>{
+    ensureLoaded(it);
+    const div=document.createElement("div");
+    div.className="thumb"+(it.isOffspring?" is-bred":"");
+
+    const img=document.createElement("img");
+    img.style.cssText="width:100%;height:100%;object-fit:cover;display:block";
+    renderThumbCached(it, url=>{ img.src=url; });
+
+    // For offspring: ghost overlay cycles parent images on hover
+    if(it.isOffspring && Array.isArray(it.parents) && it.parents.length>=2){
+      const ghost=document.createElement("div");
+      ghost.className="ghost";
+      div.appendChild(ghost);
+
+      // Resolve parent visuals: use cached thumbnail for bred parents (shows the
+      // actual mutation), fall back to base URL for base-corpus parents.
+      // This shows literal immediate parents, not base ancestors.
+      const parentItems=it.parents.map(pid=>itemIndex.get(pid)).filter(Boolean);
+
+      // Build URL list, upgrading to thumbDataUrl as caches fill in
+      const parentVisuals=parentItems.map(p=>{
+        if(p.isOffspring){
+          // Pre-render the parent's thumb if not yet cached — callback will
+          // upgrade ghostUrls in place once ready
+          return {item:p, url: p.thumbDataUrl || p.url.split("#")[0]};
+        }
+        return {item:p, url: p.url};
+      });
+
+      // Kick off thumb rendering for any bred parents not yet cached
+      parentItems.forEach((p,i)=>{
+        if(p.isOffspring && !p.thumbDataUrl){
+          renderThumbCached(p, url=>{
+            parentVisuals[i].url=url;
+          });
+        }
+      });
+
+      let ghostTimer=null, ghostPhase=0;
+      div.addEventListener("mouseenter",()=>{
+        if(parentVisuals.length===0) return;
+        ghostPhase=0;
+        // Use the most current URL at hover time (may have been upgraded by cache)
+        ghost.style.backgroundImage=`url(${parentVisuals[0].url})`;
+        ghostTimer=setInterval(()=>{
+          ghostPhase=(ghostPhase+1)%parentVisuals.length;
+          ghost.style.backgroundImage=`url(${parentVisuals[ghostPhase].url})`;
+        },420);
+      });
+      div.addEventListener("mouseleave",()=>{
+        clearInterval(ghostTimer);
+        ghostTimer=null;
+        ghost.style.backgroundImage="";
+      });
+    }
+
+    const meta=document.createElement("div");
+    meta.className="meta";
+    const s=itemScore(it).toFixed(2);
+    const tag=it.isOffspring?`[${it.mutationType}]`:`#${it.id}`;
+    meta.textContent=`${tag}  s:${s}  r:${it.rating.toFixed(2)}`;
+
+    div.appendChild(img);
+    div.appendChild(meta);
+    div.addEventListener("click",()=>{
+      jumpTo(it.id);
+      if(mode==="slideshow"){mode="curate";paused=true;document.getElementById("centerLabel").textContent="CURATE MODE";}
+      lastStatus=`Selected from ${kind} set.`;
+      updateHUD();saveState();
+    });
+    thumbGrid.appendChild(div);
+  });
+}
+
+/* ══════════════════════════════════════════════
+   HUD
+══════════════════════════════════════════════ */
+function lineageStr(item){
+  if(!item.isOffspring)return"BASE CORPUS";
+  const pnames=item.parents.map(pid=>{
+    const p=itemById(pid);
+    return p?`${p.id}${p.isOffspring?"[B]":""}`:"?";
+  });
+  return`${item.mutationType} ← [${pnames.join(",")}]`;
+}
+
+/* ══════════════════════════════════════════════
+   FIELD CONCEPT LABEL
+   Nearest-neighbor proxy: finds the base item whose latent vector best aligns
+   with the current preference vector. In CLIP space this approximates the
+   visual concept the field is converging toward. In pseudo-latent space it's
+   meaningless but harmless.
+
+   Stability: requires new best to exceed previous by CONCEPT_MARGIN before
+   switching, preventing flicker when the field is weak or undecided.
+══════════════════════════════════════════════ */
+let _conceptBestId   = null;   // id of current displayed concept item
+let _conceptBestDot  = -Infinity;
+const CONCEPT_MARGIN = 0.02;   // minimum improvement before label switches
+
+function fieldConceptLabel(){
+  const sig=Math.sqrt(preferenceVector.reduce((a,b)=>a+b*b,0));
+  if(sig < 0.05){ _conceptBestId=null; _conceptBestDot=-Infinity; return "—"; }
+
+  // Normalize Φ for clean cosine comparison
+  const pv=preferenceVector.map(x=>x/sig);
+
+  let bestDot=-Infinity, bestItem=null;
+  for(const it of baseItems){
+    const d=dot(it.latent, pv);  // base items are unit-normalized, so this is cosine
+    if(d > bestDot){ bestDot=d; bestItem=it; }
+  }
+  if(!bestItem) return "—";
+
+  // Only update displayed item if improvement exceeds hysteresis margin
+  if(bestItem.id !== _conceptBestId && bestDot > _conceptBestDot + CONCEPT_MARGIN){
+    _conceptBestId  = bestItem.id;
+    _conceptBestDot = bestDot;
+  }
+
+  const displayItem = _conceptBestId !== null
+    ? itemIndex.get(_conceptBestId) || bestItem
+    : bestItem;
+
+  // Label: just item id for now. Replace with filename/tag metadata when available.
+  // Cosine shown separately as field strength is already in the Φ row above.
+  return `img ${displayItem.id}`;
+}
+
+function updateHUD(){
+  const viewed=allItems().filter(x=>x.seen>0).length;
+  const rated=counts.awesome+counts.ok+counts.horrible;
+  const signal=Math.sqrt(preferenceVector.reduce((a,b)=>a+b*b,0));
+  const T=temperature();
+
+  const viewedBase=baseItems.filter(x=>x.seen>0).length;
+  document.getElementById("hudMode").textContent=`${mode.toUpperCase()}${paused?" / PAUSED":""}`;
+  document.getElementById("hudIndex").textContent=`${currentItemId} / ${allItems().length-1}`;
+  document.getElementById("hudViewed").textContent=String(viewed);
+  document.getElementById("hudCounts").textContent=`${counts.awesome||0} / ${counts.ok||0} / ${counts.horrible||0}`;
+  document.getElementById("hudOffspring").textContent=String(offspringItems.length);
+  document.getElementById("hudOffspringShown").textContent=String(offspringShownCount);
+  document.getElementById("hudSignal").textContent=signal.toFixed(3);
+  document.getElementById("hudTemp").textContent=T.toFixed(3);
+  document.getElementById("hudFieldConcept").textContent=fieldConceptLabel();
+  document.getElementById("hudStatus").textContent=lastStatus;
+  document.getElementById("progressBar").style.width=`${(viewedBase/baseItems.length)*100}%`;
+  document.getElementById("hudLineage").textContent="LINEAGE: "+lineageStr(currentItem());
+
+  if(side.classList.contains("show")) renderSet(shownSideKind);
+}
+
+/* ══════════════════════════════════════════════
+   BACKGROUND
+══════════════════════════════════════════════ */
+const bgCanvas=document.getElementById("bg");
+const mainCanvas=document.getElementById("main");
+const bgCtx=bgCanvas.getContext("2d");
+const ctx=mainCanvas.getContext("2d");
+
+const stars=Array.from({length:140},(_,i)=>({
+  x:randHash(i*17.11),y:randHash(i*29.91),
+  z:0.2+randHash(i*7.31)*0.8,s:0.2+randHash(i*91.73)*1.4
+}));
+
+function resize(){
+  const dpr=devicePixelRatio||1;
+  bgCanvas.width=mainCanvas.width=innerWidth*dpr;
+  bgCanvas.height=mainCanvas.height=innerHeight*dpr;
+  bgCanvas.style.width=mainCanvas.style.width=innerWidth+"px";
+  bgCanvas.style.height=mainCanvas.style.height=innerHeight+"px";
+  bgCtx.setTransform(dpr,0,0,dpr,0,0);
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+}
+addEventListener("resize",resize);
+resize();
+
+function drawBackground(t){
+  const w=innerWidth,h=innerHeight;
+  bgCtx.clearRect(0,0,w,h);
+  bgCtx.strokeStyle="rgba(38,115,70,.20)";
+  bgCtx.lineWidth=1;
+  const g=42;
+  for(let x=0;x<=w;x+=g){bgCtx.beginPath();bgCtx.moveTo(x,0);bgCtx.lineTo(x,h);bgCtx.stroke();}
+  for(let y=0;y<=h;y+=g){bgCtx.beginPath();bgCtx.moveTo(0,y);bgCtx.lineTo(w,y);bgCtx.stroke();}
+  for(const st of stars){
+    const px=(st.x*w+t*0.012*st.z)%w;
+    const py=(st.y*h+t*0.006*st.z)%h;
+    bgCtx.fillStyle=`rgba(140,255,175,${0.12+st.z*0.48})`;
+    bgCtx.fillRect(px,py,st.s,st.s);
+  }
+}
+
+/* ══════════════════════════════════════════════
+   MAIN DRAW
+══════════════════════════════════════════════ */
+function drawReticle(w,h,item){
+  const cx=w/2,cy=h/2;
+  const R=Math.min(w,h)*0.18;
+  const r=Math.min(w,h)*0.08;
+  const arm=Math.min(w,h)*0.28;
+
+  const isOffspring=item.isOffspring;
+  const lineColor=isOffspring?"rgba(44,255,220,.80)":"rgba(100,255,155,.82)";
+
+  ctx.strokeStyle=lineColor;
+  ctx.lineWidth=1.1;
+
+  ctx.beginPath();ctx.arc(cx,cy,R,0,Math.PI*2);ctx.stroke();
+  ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.stroke();
+
+  ctx.beginPath();
+  ctx.moveTo(cx-arm,cy);ctx.lineTo(cx-r,cy);
+  ctx.moveTo(cx+r,cy);ctx.lineTo(cx+arm,cy);
+  ctx.moveTo(cx,cy-arm);ctx.lineTo(cx,cy-r);
+  ctx.moveTo(cx,cy+r);ctx.lineTo(cx,cy+arm);
+  ctx.stroke();
+
+  ctx.font="11px Consolas";
+  ctx.fillStyle=lineColor;
+  const s=itemScore(item).toFixed(3);
+  const T=temperature().toFixed(3);
+  const tag=isOffspring?"[BRED TARGET]":"";
+  ctx.fillText(`TARGET ${item.id}${tag?" "+tag:""}`,cx-62,cy-R-14);
+  ctx.fillText(`SCORE ${s}  T ${T}`,cx-60,cy+R+18);
+  if(isOffspring){
+    ctx.fillStyle="rgba(44,255,220,.7)";
+    ctx.fillText(item.mutationType||"",cx-36,cy+R+34);
+  }
+}
+
+// Crossfade state — previous item lingers at decaying opacity on item change
+let xfadePrevId   = null;   // item id of the outgoing image
+let xfadeAlpha    = 0;      // current opacity of previous image (1 → 0)
+let xfadeLastTime = 0;
+const XFADE_MS    = 380;    // total fade duration in ms
+
+/* When advanceNext fires, snapshot the outgoing item so drawFrame can blend it */
+function triggerCrossfade(){
+  xfadePrevId  = currentItemId;
+  xfadeAlpha   = 1;
+  xfadeLastTime= performance.now();
+}
+
+function drawImageRect(targetCtx, item, dx, dy, dw, dh){
+  const drawn=drawImageItem(targetCtx,item,dx,dy,dw,dh);
+  if(drawn) applyMonochromeRect(targetCtx,dx,dy,dw,dh);
+  return drawn;
+}
+
+function drawFrame(time){
+  drawBackground(time);
+  const w=innerWidth,h=innerHeight;
+  ctx.clearRect(0,0,w,h);
+
+  const item=currentItem();
+  ensureLoaded(item);
+
+  const pad=Math.min(w,h)*0.08;
+  const vx=pad,vy=pad,vw=w-pad*2,vh=h-pad*2;
+
+  ctx.strokeStyle="rgba(70,160,100,.50)";
+  ctx.strokeRect(vx,vy,vw,vh);
+
+  const iw=960,ih=720;
+  const scale=Math.min(vw/iw,vh/ih);
+  const dw=iw*scale,dh=ih*scale;
+  const dx=vx+(vw-dw)/2,dy=vy+(vh-dh)/2;
+
+  // ── Crossfade: tick alpha and draw outgoing image underneath ──
+  if(xfadeAlpha > 0 && xfadePrevId !== null && xfadePrevId !== currentItemId){
+    const elapsed = time - xfadeLastTime;
+    xfadeAlpha = Math.max(0, 1 - elapsed / XFADE_MS);
+    const prevItem = itemIndex.get(xfadePrevId);
+    if(prevItem && xfadeAlpha > 0){
+      ctx.save();
+      ctx.globalAlpha = xfadeAlpha * 0.72;  // never fully opaque — always ghostly
+      drawImageRect(ctx, prevItem, dx, dy, dw, dh);
+      ctx.restore();
+    }
+  }
+
+  // ── Current image at full opacity, fading in ──
+  const inAlpha = xfadeAlpha > 0 ? Math.min(1, 1.4 - xfadeAlpha) : 1;
+  ctx.save();
+  ctx.globalAlpha = inAlpha;
+  const drawn = drawImageRect(ctx, item, dx, dy, dw, dh);
+  ctx.restore();
+
+  if(drawn){
+    // Phosphor screen overlay
+    ctx.save();
+    ctx.globalCompositeOperation="screen";
+    const grad=ctx.createRadialGradient(dx+dw/2,dy+dh/2,dh*0.05,dx+dw/2,dy+dh/2,dh*0.7);
+    grad.addColorStop(0,"rgba(100,255,155,.07)");
+    grad.addColorStop(1,"rgba(0,0,0,0)");
+    ctx.fillStyle=grad;
+    ctx.fillRect(dx,dy,dw,dh);
+    ctx.restore();
+
+    // "FIELD SYNTHESIS EVENT" flash for newly arrived bred targets
+    if(item.isOffspring && item.seen === 1 && inAlpha > 0.9){
+      ctx.save();
+      ctx.font="11px Consolas";
+      ctx.fillStyle="rgba(44,255,220,0.65)";
+      ctx.fillText("◈ FIELD SYNTHESIS EVENT",dx+8,dy+18);
+      ctx.restore();
+    }
+  } else {
+    ctx.fillStyle="rgba(100,200,135,.7)";
+    ctx.font="16px Consolas";
+    ctx.fillText("ACQUIRING SIGNAL...",vx+24,vy+40);
+    if(item.failed){
+      ctx.fillStyle="rgba(140,210,160,.6)";
+      ctx.font="11px Consolas";
+      ctx.fillText("IMAGE LOAD FAILED",vx+24,vy+64);
+    }
+  }
+
+  drawReticle(w,h,item);
+  requestAnimationFrame(drawFrame);
+}
+requestAnimationFrame(drawFrame);
+
+/* ══════════════════════════════════════════════
+   AUTOPLAY
+══════════════════════════════════════════════ */
+setInterval(()=>{
+  if(mode==="slideshow"&&!paused) advanceNext();
+},AUTOPLAY_MS);
+
+/* ══════════════════════════════════════════════
+   EVENT WIRING
+══════════════════════════════════════════════ */
+document.getElementById("awesomeBtn").addEventListener("click",()=>markRating(1,"awesome"));
+document.getElementById("okBtn").addEventListener("click",()=>markRating(0.4,"ok"));
+document.getElementById("horribleBtn").addEventListener("click",()=>markRating(-1,"horrible"));
+document.getElementById("nextBtn").addEventListener("click",()=>advanceNext());
+document.getElementById("modeBtn").addEventListener("click",toggleMode);
+document.getElementById("topBtn").addEventListener("click",()=>openSet("top"));
+document.getElementById("worstBtn").addEventListener("click",()=>openSet("worst"));
+document.getElementById("breedBtn").addEventListener("click",breedOffspring);
+document.getElementById("showBredBtnMain").addEventListener("click",()=>openSet("offspring"));
+document.getElementById("pauseBtn").addEventListener("click",togglePause);
+document.getElementById("hideUiBtn").addEventListener("click",()=>document.body.classList.toggle("hide-ui"));
+document.getElementById("resetBtn").addEventListener("click",resetAll);
+
+document.getElementById("showTopBtn").addEventListener("click",()=>openSet("top"));
+document.getElementById("showWorstBtn").addEventListener("click",()=>openSet("worst"));
+document.getElementById("showBredBtn").addEventListener("click",()=>openSet("offspring"));
+document.getElementById("closeSideBtn").addEventListener("click",()=>{side.classList.remove("show");saveState();});
+
+addEventListener("keydown",e=>{
+  if(e.key==="1")markRating(1,"awesome");
+  else if(e.key==="2")markRating(0.4,"ok");
+  else if(e.key==="3")markRating(-1,"horrible");
+  else if(e.key==="ArrowRight")advanceNext();
+  else if(e.key.toLowerCase()==="m")toggleMode();
+  else if(e.key.toLowerCase()==="t")openSet("top");
+  else if(e.key.toLowerCase()==="w")openSet("worst");
+  else if(e.key.toLowerCase()==="b")breedOffspring();
+  else if(e.key.toLowerCase()==="o")openSet("offspring");
+  else if(e.key===" "){e.preventDefault();togglePause();}
+  else if(e.key.toLowerCase()==="h")document.body.classList.toggle("hide-ui");
+});
+
+mainCanvas.addEventListener("click",()=>{
+  if(document.body.classList.contains("hide-ui")){
+    document.body.classList.remove("hide-ui");return;
+  }
+  if(mode==="slideshow") markRating(0.4,"ok");
+});
+
+/* ══════════════════════════════════════════════
+   CLIP SIDECAR LOADER
+   Fetches blastoids_embeddings.json if present,
+   replaces pseudo-random latent vectors on baseItems
+   with real CLIP embeddings, then fires normal init.
+   Falls back gracefully if fetch fails or file is absent.
+══════════════════════════════════════════════ */
+
+async function loadEmbeddingSidecar(){
+  if(!EMBEDDINGS_URL) return false;
+  try{
+    const resp = await fetch(EMBEDDINGS_URL);
+    if(!resp.ok) return false;
+    const data = await resp.json();
+
+    const embs = data.embeddings;
+    const dim  = data.dim;
+    if(!embs || !dim){ return false; }
+
+    const prevDim = LATENT_DIM;
+    const dimChanged = dim !== prevDim;
+
+    // Update global dimension
+    LATENT_DIM = dim;
+
+    let replaced = 0, missing = 0;
+    for(const item of baseItems){
+      const vec = embs[String(item.id)];
+      if(vec && vec.length === dim){
+        item.latent = vec;
+        replaced++;
+      } else {
+        item.latent = makeVector(item.id + 1, dim);
+        missing++;
+      }
+    }
+
+    // preferenceVector must match new dim
+    preferenceVector = new Array(dim).fill(0);
+
+    // Offspring from a previous session in a different latent space are now
+    // geometrically incoherent — their vectors are meaningless in the new space.
+    // Clear them rather than let them corrupt scoring and breeding.
+    let prunedOffspring = 0;
+    if(dimChanged && offspringItems.length > 0){
+      prunedOffspring = offspringItems.length;
+      offspringItems.forEach(it => itemIndex.delete(it.id));
+      offspringItems = [];
+      breedGeneration = 0;  // reset generation clock — fresh start in new space
+    }
+
+    const pruneNote = prunedOffspring > 0
+      ? ` · ${prunedOffspring} bred targets cleared — they belonged to the old embedding space and cannot carry over`
+      : "";
+
+    console.log(
+      `[Blastoids] CLIP embeddings loaded: ${data.model}, ` +
+      `${dim}d, ${replaced} replaced, ${missing} pseudo-fallback${pruneNote}`
+    );
+
+    lastStatus = `CLIP embeddings loaded: ${data.model} (${dim}d, ${replaced} images)${pruneNote}`;
+    return true;
+
+  } catch(e){
+    console.warn("[Blastoids] Embedding sidecar not found or failed, using pseudo-latents.", e);
+    return false;
+  }
+}
+
+/* ══════════════════════════════════════════════
+   INIT
+══════════════════════════════════════════════ */
+async function startup(){
+  // 1. Hydrate persisted ratings/state first (needs baseItems to exist)
+  hydrateFromState();
+
+  // 2. Load CLIP embeddings — overwrites latent vectors but preserves ratings
+  const clipsLoaded = await loadEmbeddingSidecar();
+
+  // 3. If CLIP loaded, rebuild preference vector from existing ratings
+  //    using the new real embeddings rather than pseudo ones
+  if(clipsLoaded && (counts.awesome + counts.ok + counts.horrible) > 0){
+    rebuildPreferenceVector();
+    lastStatus += " · Φ rebuilt from saved ratings.";
+  }
+
+  preloadAround(currentItem(), 18);
+  updateHUD();
+  saveState();
+}
+
+startup();
+</script>
+</body>
+</html>

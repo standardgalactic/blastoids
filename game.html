@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"/>
+<title>BLASTOIDS · TUNNEL</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{
+  width:100%;height:100%;overflow:hidden;
+  background:#000;
+  font-family:Consolas,"Courier New",monospace;
+  touch-action:none;
+  user-select:none;
+  -webkit-user-select:none;
+}
+canvas{display:block;width:100%;height:100%}
+
+#hud{
+  position:fixed;top:0;left:0;right:0;
+  display:flex;justify-content:space-between;align-items:flex-start;
+  padding:14px 18px;
+  pointer-events:none;
+  z-index:10;
+}
+.hud-block{
+  font-size:13px;letter-spacing:1.5px;
+  color:rgba(180,255,210,.85);
+  text-shadow:0 0 10px rgba(80,255,140,.5);
+  line-height:1.7;
+}
+.hud-val{
+  color:#fff;
+  text-shadow:0 0 14px rgba(100,255,160,.7);
+}
+
+#overlay{
+  position:fixed;inset:0;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  background:rgba(0,0,0,.82);
+  z-index:20;
+  gap:18px;
+}
+#overlay h1{
+  font-size:clamp(28px,6vw,52px);
+  letter-spacing:6px;
+  color:#66ff99;
+  text-shadow:0 0 30px #33ff77,0 0 60px #00cc44;
+  text-transform:uppercase;
+}
+#overlay p{
+  font-size:clamp(11px,2.5vw,14px);
+  color:rgba(150,255,190,.7);
+  letter-spacing:2px;
+  text-align:center;
+  max-width:340px;
+  line-height:1.8;
+}
+#startBtn{
+  margin-top:8px;
+  font-family:Consolas,monospace;
+  font-size:15px;letter-spacing:3px;
+  background:transparent;
+  border:1px solid #66ff99;
+  color:#66ff99;
+  padding:12px 36px;
+  cursor:pointer;
+  text-transform:uppercase;
+  text-shadow:0 0 10px #33ff77;
+  box-shadow:0 0 20px rgba(50,255,100,.15);
+  transition:background .15s,box-shadow .15s;
+}
+#startBtn:hover,#startBtn:active{
+  background:rgba(50,255,100,.1);
+  box-shadow:0 0 30px rgba(50,255,100,.3);
+}
+
+#gameover{
+  position:fixed;inset:0;
+  display:none;flex-direction:column;
+  align-items:center;justify-content:center;
+  background:rgba(0,0,0,.85);
+  z-index:20;gap:14px;
+}
+#gameover h2{
+  font-size:clamp(24px,5vw,44px);
+  letter-spacing:5px;color:#ff4466;
+  text-shadow:0 0 20px #ff2244;
+}
+#gameover .score-final{
+  font-size:clamp(14px,3vw,22px);
+  color:#aaffcc;letter-spacing:3px;
+}
+#gameover button{
+  font-family:Consolas,monospace;font-size:13px;letter-spacing:2px;
+  background:transparent;border:1px solid #66ff99;color:#66ff99;
+  padding:10px 28px;cursor:pointer;text-transform:uppercase;margin-top:8px;
+}
+
+/* mobile shoot zones — invisible tap areas on left/right flanks */
+#zone-left,#zone-right{
+  position:fixed;top:0;bottom:0;width:22%;
+  z-index:5;
+  /* visible hint on first load */
+  background:rgba(100,255,160,.03);
+  pointer-events:auto;
+}
+#zone-left{left:0}
+#zone-right{right:0}
+</style>
+</head>
+<body>
+
+<canvas id="c"></canvas>
+
+<div id="hud">
+  <div class="hud-block">
+    SCORE<br><span class="hud-val" id="hScore">0</span>
+  </div>
+  <div class="hud-block" style="text-align:center">
+    DEPTH<br><span class="hud-val" id="hDepth">0</span>
+  </div>
+  <div class="hud-block" style="text-align:right">
+    LIVES<br><span class="hud-val" id="hLives">♦♦♦</span>
+  </div>
+</div>
+
+<div id="overlay">
+  <h1>◈ BLASTOIDS</h1>
+  <p>SHOOT THE BUBBLES BEFORE THEY REACH YOU<br>
+     CLICK · TAP SIDES · SPACEBAR</p>
+  <button id="startBtn">LAUNCH</button>
+</div>
+
+<div id="gameover">
+  <h2>HULL BREACH</h2>
+  <div class="score-final">FINAL SCORE: <span id="goScore">0</span></div>
+  <div class="score-final" style="font-size:13px;color:#669988">DEPTH: <span id="goDepth">0</span></div>
+  <button onclick="restartGame()">RETRY</button>
+</div>
+
+<div id="zone-left"></div>
+<div id="zone-right"></div>
+
+<script>
+// ── CORPUS ──────────────────────────────────────────────────────────────────
+const CORPUS_COUNT = 5000;
+const SPLIT        = 2500;
+
+function corpusImageUrl(n){
+  const folder = n <= SPLIT ? 'a' : 'b';
+  return `images/${folder}/blastoids_${String(n).padStart(5,'0')}_.png`;
+}
+
+function randomCorpusUrl(){
+  return corpusImageUrl(1 + Math.floor(Math.random() * CORPUS_COUNT));
+}
+
+// ── CANVAS SETUP ─────────────────────────────────────────────────────────────
+const canvas = document.getElementById('c');
+const ctx    = canvas.getContext('2d');
+
+let W, H, CX, CY;
+function resize(){
+  canvas.width  = W = window.innerWidth  * devicePixelRatio;
+  canvas.height = H = window.innerHeight * devicePixelRatio;
+  canvas.style.width  = window.innerWidth  + 'px';
+  canvas.style.height = window.innerHeight + 'px';
+  CX = W/2; CY = H/2;
+}
+window.addEventListener('resize', resize);
+resize();
+
+// ── IMAGE CACHE ───────────────────────────────────────────────────────────────
+const imgCache = new Map();
+function getImage(url){
+  if(imgCache.has(url)) return imgCache.get(url);
+  const img = new Image();
+  img.src = url;
+  imgCache.set(url, img);
+  return img;
+}
+// Preload a handful
+for(let i=0;i<12;i++) getImage(randomCorpusUrl());
+
+// ── GAME STATE ────────────────────────────────────────────────────────────────
+let score=0, lives=3, depth=0, running=false, raf=null;
+let bgUrl = randomCorpusUrl();
+let bgImg = getImage(bgUrl);
+let bgAlpha = 0;
+let nextBgTimer = 0;
+
+// Tuned constants — three independent "clocks" as per doc 3
+const BUBBLE_SPEED_BASE = 0.00042; // base forward velocity (aesthetic clock)
+const TUNNEL_RINGS      = 14;
+const TUNNEL_RADIUS     = 0.38;
+const DESIRED_DENSITY   = 5;       // target bubble count; density model replaces timer spawn
+
+let tunnelPhase = 0;
+let gameTime    = 0;  // independent clock fed raw dt before scaling
+
+// ── FLOW FIELD ────────────────────────────────────────────────────────────────
+// All bubbles share one coherent drift field — removes independent noise jitter
+function flowField(angle, t){
+  const base  =  0.22 * Math.sin(angle * 2 + t * 0.00018);
+  const shear =  0.12 * Math.sin(t * 0.00009);
+  return base + shear;
+}
+
+// Radial contraction: slow far away, stronger near camera
+function contraction(z){
+  return 0.4 + 0.8 * z * z;
+}
+
+// Subtle size pulse per bubble (field excitation feel)
+function fieldStrength(angle, t){
+  return 0.5 + 0.5 * Math.sin(angle * 4 + t * 0.00018);
+}
+
+// ── BUBBLES ──────────────────────────────────────────────────────────────────
+let bubbles = [];
+
+function spawnBubble(){
+  const angle = Math.random() * Math.PI * 2;
+  // Structured radFrac — not pure random noise
+  const radFrac = 0.42 + 0.28 * Math.abs(Math.sin(angle * 3));
+  bubbles.push({
+    z:        0,
+    angle,
+    radFrac,
+    radius3d: 0.016 + Math.random() * 0.018,
+    img:      getImage(randomCorpusUrl()),
+    popping:  false,
+    popT:     0,
+    flares:   [],
+  });
+}
+
+// ── PROJECTILES ──────────────────────────────────────────────────────────────
+let projectiles = [];
+
+function fireFromSide(fromLeft){
+  const sx = fromLeft ? 0 : W;
+  const sy = CY + (Math.random()-0.5) * H * 0.3;
+  projectiles.push({
+    x:  sx, y: sy,
+    vx: fromLeft ? W*0.012 : -W*0.012,
+    vy: (CY - sy) * 0.028,
+    life: 1,
+    fromLeft,
+  });
+}
+
+function fireAtCursor(mx, my){
+  const sx = CX, sy = H * 0.92;
+  const dx = mx - sx, dy = my - sy;
+  const len = Math.sqrt(dx*dx + dy*dy) || 1;
+  const spd = W * 0.012;
+  projectiles.push({
+    x: sx, y: sy,
+    vx: dx/len * spd,
+    vy: dy/len * spd,
+    life: 1,
+    fromLeft: null,
+  });
+}
+
+// ── PARTICLES ────────────────────────────────────────────────────────────────
+let particles = [];
+
+function spawnPop(px, py, radius){
+  const count = 10 + Math.floor(radius * 30);  // reduced for stability
+  for(let i=0;i<count;i++){
+    const a = Math.random() * Math.PI * 2;
+    const s = (0.2 + Math.random() * 0.6) * radius * 0.05;
+    particles.push({
+      x: px, y: py,
+      vx: Math.cos(a)*s, vy: Math.sin(a)*s,
+      life: 1,
+      size: 1 + Math.random() * 2.5,
+      hue:  120 + Math.random() * 60,
+    });
+  }
+}
+
+// ── PROJECTION ───────────────────────────────────────────────────────────────
+// z=0 → far (small), z=1 → close (fills screen)
+// perspective: scale = 1/(1 - z*0.92) roughly
+function project(ax, ay, z){
+  const fov    = 0.88;
+  const scale  = 1 / Math.max(0.05, 1 - z * fov);
+  const tunnelR = Math.min(W, H) * TUNNEL_RADIUS;
+  const px = CX + ax * tunnelR * scale;
+  const py = CY + ay * tunnelR * scale;
+  return { px, py, scale };
+}
+
+// ── INPUT ─────────────────────────────────────────────────────────────────────
+function screenToCanvas(ex, ey){
+  const rect = canvas.getBoundingClientRect();
+  const dpr  = devicePixelRatio;
+  return {
+    x: (ex - rect.left) * dpr,
+    y: (ey - rect.top)  * dpr,
+  };
+}
+
+function tryShoot(cx, cy){
+  if(!running) return;
+  // Check bubble hits first (direct tap/click)
+  for(const b of bubbles){
+    if(b.popping) continue;
+    const {px, py, scale} = project(
+      b.radFrac * Math.cos(b.angle),
+      b.radFrac * Math.sin(b.angle),
+      b.z
+    );
+    const r = b.radius3d * Math.min(W,H) * scale;
+    const dist = Math.hypot(cx-px, cy-py);
+    if(dist < r){
+      popBubble(b, cx, cy);
+      return;
+    }
+  }
+  // Otherwise fire a projectile toward click point
+  fireAtCursor(cx, cy);
+}
+
+canvas.addEventListener('click', e => {
+  const {x,y} = screenToCanvas(e.clientX, e.clientY);
+  tryShoot(x, y);
+});
+
+canvas.addEventListener('touchstart', e => {
+  e.preventDefault();
+  for(const t of e.changedTouches){
+    const {x,y} = screenToCanvas(t.clientX, t.clientY);
+    const relX = x / W;
+    if(relX < 0.22)      fireFromSide(true);
+    else if(relX > 0.78) fireFromSide(false);
+    else                 tryShoot(x, y);
+  }
+}, {passive:false});
+
+document.getElementById('zone-left').addEventListener('touchstart', e=>{
+  e.preventDefault(); if(running) fireFromSide(true);
+},{passive:false});
+document.getElementById('zone-right').addEventListener('touchstart', e=>{
+  e.preventDefault(); if(running) fireFromSide(false);
+},{passive:false});
+document.getElementById('zone-left').addEventListener('click', ()=>{ if(running) fireFromSide(true); });
+document.getElementById('zone-right').addEventListener('click', ()=>{ if(running) fireFromSide(false); });
+
+window.addEventListener('keydown', e=>{
+  if(!running) return;
+  if(e.code==='Space'){ e.preventDefault(); fireFromSide(true); fireFromSide(false); }
+  if(e.code==='ArrowLeft')  fireFromSide(true);
+  if(e.code==='ArrowRight') fireFromSide(false);
+});
+
+// ── POP BUBBLE ────────────────────────────────────────────────────────────────
+function popBubble(b, hitX, hitY){
+  b.popping = true;
+  b.popT    = 0;
+  const {px, py, scale} = project(
+    b.radFrac * Math.cos(b.angle),
+    b.radFrac * Math.sin(b.angle),
+    b.z
+  );
+  const r = b.radius3d * Math.min(W,H) * scale;
+  spawnPop(px, py, r);
+
+  // Flares from both sides of screen
+  for(let side=0;side<2;side++){
+    const fromLeft = side===0;
+    const sx = fromLeft ? 0 : W;
+    const sy = CY + (Math.random()-0.5)*H*0.2;
+    b.flares.push({
+      x: sx, y: sy,
+      tx: px, ty: py,
+      life: 1, fromLeft,
+    });
+  }
+
+  score += Math.round(50 + b.z * 150);
+  document.getElementById('hScore').textContent = score;
+}
+
+// ── UPDATE ────────────────────────────────────────────────────────────────────
+let lastTime = 0;
+
+function update(rawDt){
+  // ── Global time scale: main "feel" dial ──
+  const dt = rawDt * 0.55;
+
+  // Independent clocks:
+  // gameTime = raw for flow field phase (aesthetic clock, unscaled)
+  // depth = bounded progress (difficulty field)
+  // dt = player-relative time (scaled)
+  gameTime += rawDt;
+
+  depth += dt * 0.020;
+  document.getElementById('hDepth').textContent = Math.floor(depth);
+
+  // Tunnel: purely aesthetic, gentle
+  tunnelPhase += dt * 0.00018;
+
+  // Background
+  nextBgTimer -= dt;
+  if(nextBgTimer <= 0){
+    bgUrl = randomCorpusUrl();
+    bgImg = getImage(bgUrl);
+    bgAlpha = 0;
+    nextBgTimer = 5000 + Math.random() * 4000;
+  }
+  if(bgAlpha < 1) bgAlpha = Math.min(1, bgAlpha + dt * 0.001);
+
+  // ── Density-based spawning — maintains steady field ──
+  const desired = DESIRED_DENSITY + Math.floor(depth * 0.18);
+  const active  = bubbles.filter(b=>!b.popping).length;
+  if(active < desired) spawnBubble();
+
+  // ── Speed: logarithmic — no runaway acceleration ──
+  const speed = BUBBLE_SPEED_BASE * (1 + Math.log1p(depth) * 0.45);
+
+  // ── BUBBLES ──
+  for(let i=bubbles.length-1;i>=0;i--){
+    const b = bubbles[i];
+
+    if(b.popping){
+      b.popT += dt * 0.0025;
+      if(b.popT >= 1) bubbles.splice(i,1);
+      continue;
+    }
+
+    // Field-driven angular drift (coherent, not random)
+    b.angle += dt * 0.00018 * flowField(b.angle, gameTime);
+
+    // Weak attractor: creates lane structure without hard constraints
+    const targetAngle = Math.sin(gameTime * 0.00012) * Math.PI;
+    b.angle += (targetAngle - b.angle) * 0.000015 * dt;
+
+    // Contraction curve: slow far, faster near camera
+    b.z += dt * speed * contraction(b.z);
+
+    // Subtle size pulse — field excitation
+    b.radius3d *= 0.98 + 0.04 * fieldStrength(b.angle, gameTime) * 0.5;
+
+    if(b.z >= 1){
+      bubbles.splice(i,1);
+      lives--;
+      const sym = lives>=3?'♦♦♦':lives>=2?'♦♦◇':lives>=1?'♦◇◇':'◇◇◇';
+      document.getElementById('hLives').textContent = sym;
+      if(lives <= 0){ endGame(); return; }
+    }
+  }
+
+  // ── PROJECTILES ──
+  for(let i=projectiles.length-1;i>=0;i--){
+    const p = projectiles[i];
+    p.x += p.vx;
+    p.y += p.vy;
+    p.life -= dt * 0.001;
+
+    let hit = false;
+    for(const b of bubbles){
+      if(b.popping) continue;
+      const {px, py, scale} = project(
+        b.radFrac * Math.cos(b.angle),
+        b.radFrac * Math.sin(b.angle),
+        b.z
+      );
+      const r = b.radius3d * Math.min(W,H) * scale;
+      if(Math.hypot(p.x-px, p.y-py) < r){
+        popBubble(b, p.x, p.y); hit=true; break;
+      }
+    }
+
+    if(hit || p.life<=0 ||
+       p.x<-W*0.1||p.x>W*1.1||
+       p.y<-H*0.1||p.y>H*1.1){
+      projectiles.splice(i,1);
+    }
+  }
+
+  // ── PARTICLES ──
+  for(let i=particles.length-1;i>=0;i--){
+    const p = particles[i];
+    p.x += p.vx; p.y += p.vy;
+    p.vx *= 0.96; p.vy *= 0.96;
+    p.life -= dt * 0.0012;
+    if(p.life<=0) particles.splice(i,1);
+  }
+}
+
+// ── DRAW ──────────────────────────────────────────────────────────────────────
+function drawBackground(){
+  // Dark base
+  ctx.fillStyle = '#020a04';
+  ctx.fillRect(0,0,W,H);
+
+  // Corpus image background
+  if(bgImg.complete && bgImg.naturalWidth > 0){
+    ctx.save();
+    ctx.globalAlpha = bgAlpha * 0.28;
+    // cover-fit
+    const iw = bgImg.naturalWidth, ih = bgImg.naturalHeight;
+    const scale = Math.max(W/iw, H/ih);
+    const dw = iw*scale, dh = ih*scale;
+    ctx.drawImage(bgImg, (W-dw)/2, (H-dh)/2, dw, dh);
+    ctx.restore();
+  }
+
+  // Radial dark vignette over background
+  const vig = ctx.createRadialGradient(CX,CY,H*0.1,CX,CY,H*0.9);
+  vig.addColorStop(0,'rgba(0,0,0,0)');
+  vig.addColorStop(1,'rgba(0,0,0,0.75)');
+  ctx.fillStyle = vig;
+  ctx.fillRect(0,0,W,H);
+}
+
+function drawTunnel(){
+  const minDim = Math.min(W,H);
+  const rings  = TUNNEL_RINGS;
+
+  for(let i=0;i<rings;i++){
+    // z from ~0.05 to ~0.95, animated with tunnelPhase
+    const zBase = (i / rings);
+    const z = ((zBase + tunnelPhase) % 1.0);
+    if(z < 0.02) continue;
+
+    const fov   = 0.88;
+    const scale = 1 / Math.max(0.05, 1 - z * fov);
+    const r     = minDim * TUNNEL_RADIUS * scale;
+
+    const alpha = z * 0.35;
+    ctx.beginPath();
+    ctx.arc(CX, CY, r, 0, Math.PI*2);
+    ctx.strokeStyle = `rgba(50,180,90,${alpha})`;
+    ctx.lineWidth   = 1 + z * 1.5;
+    ctx.stroke();
+
+    // Cross-hairs at each ring
+    ctx.strokeStyle = `rgba(40,140,70,${alpha*0.5})`;
+    ctx.lineWidth = 0.5;
+    const tl = r * 0.08;
+    [0, Math.PI/2, Math.PI, Math.PI*1.5].forEach(a=>{
+      const cx2 = CX + Math.cos(a)*r;
+      const cy2 = CY + Math.sin(a)*r;
+      ctx.beginPath();
+      ctx.moveTo(cx2 - Math.cos(a)*tl, cy2 - Math.sin(a)*tl);
+      ctx.lineTo(cx2 + Math.cos(a)*tl, cy2 + Math.sin(a)*tl);
+      ctx.stroke();
+    });
+  }
+
+  // Tunnel axis lines converging to center
+  const outerR = minDim * TUNNEL_RADIUS * 4;
+  for(let i=0;i<8;i++){
+    const a = (i/8)*Math.PI*2;
+    ctx.beginPath();
+    ctx.moveTo(CX + Math.cos(a)*outerR, CY + Math.sin(a)*outerR);
+    ctx.lineTo(CX, CY);
+    ctx.strokeStyle = 'rgba(40,130,65,0.12)';
+    ctx.lineWidth = 0.8;
+    ctx.stroke();
+  }
+}
+
+function drawBubbles(){
+  const minDim = Math.min(W,H);
+
+  for(const b of bubbles){
+    const ax = b.radFrac * Math.cos(b.angle);
+    const ay = b.radFrac * Math.sin(b.angle);
+    const {px, py, scale} = project(ax, ay, b.z);
+    const r = b.radius3d * minDim * scale;
+
+    if(b.popping){
+      // Expansion + fade
+      const t  = b.popT;
+      const er = r * (1 + t * 2.5);
+      ctx.save();
+      ctx.globalAlpha = (1 - t) * 0.7;
+      ctx.beginPath();
+      ctx.arc(px, py, er, 0, Math.PI*2);
+      ctx.strokeStyle = '#88ffaa';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      // Inner flash
+      const g = ctx.createRadialGradient(px,py,0,px,py,er);
+      g.addColorStop(0,`rgba(200,255,220,${(1-t)*0.6})`);
+      g.addColorStop(1,'rgba(0,0,0,0)');
+      ctx.fillStyle = g;
+      ctx.beginPath();
+      ctx.arc(px,py,er,0,Math.PI*2);
+      ctx.fill();
+      ctx.restore();
+
+      // Flare streaks
+      for(const fl of b.flares){
+        const ft = 1 - fl.life;
+        const fx = fl.x + (fl.tx - fl.x) * ft;
+        const fy = fl.y + (fl.ty - fl.y) * ft;
+        ctx.save();
+        ctx.globalAlpha = fl.life * 0.9;
+        ctx.beginPath();
+        ctx.moveTo(fl.x, fl.y);
+        ctx.lineTo(fx, fy);
+        ctx.strokeStyle = fl.fromLeft ? '#66ffcc' : '#aaff66';
+        ctx.lineWidth = 2 * fl.life;
+        ctx.stroke();
+        // tip glow
+        ctx.beginPath();
+        ctx.arc(fx, fy, 4*fl.life, 0, Math.PI*2);
+        ctx.fillStyle = fl.fromLeft ? '#aaffee' : '#ccff88';
+        ctx.fill();
+        ctx.restore();
+        fl.life -= 0.035;
+      }
+      b.flares = b.flares.filter(f=>f.life>0);
+      continue;
+    }
+
+    // Draw bubble
+    ctx.save();
+
+    // Clip to circle
+    ctx.beginPath();
+    ctx.arc(px, py, r, 0, Math.PI*2);
+    ctx.clip();
+
+    // Image fill
+    if(b.img.complete && b.img.naturalWidth > 0){
+      const iw = b.img.naturalWidth, ih = b.img.naturalHeight;
+      const s  = Math.max(r*2/iw, r*2/ih);
+      ctx.globalAlpha = 0.72;
+      ctx.drawImage(b.img, px-iw*s/2, py-ih*s/2, iw*s, ih*s);
+    } else {
+      ctx.fillStyle = 'rgba(40,120,70,0.4)';
+      ctx.fillRect(px-r,py-r,r*2,r*2);
+    }
+
+    ctx.restore();
+
+    // Bubble rim — thickness and glow increase as it approaches
+    const rimAlpha = 0.4 + b.z * 0.55;
+    const rimGlow  = 1 + b.z * 3;
+
+    // Outer glow ring
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(px, py, r + rimGlow*2, 0, Math.PI*2);
+    ctx.strokeStyle = `rgba(80,255,140,${rimAlpha * 0.3})`;
+    ctx.lineWidth = rimGlow * 3;
+    ctx.stroke();
+    ctx.restore();
+
+    // Hard rim
+    ctx.beginPath();
+    ctx.arc(px, py, r, 0, Math.PI*2);
+    ctx.strokeStyle = `rgba(120,255,160,${rimAlpha})`;
+    ctx.lineWidth = 1.5 + b.z * 2;
+    ctx.stroke();
+
+    // Danger indicator as bubble grows close
+    if(b.z > 0.7){
+      const warn = (b.z - 0.7) / 0.3;
+      ctx.beginPath();
+      ctx.arc(px, py, r * 1.15, 0, Math.PI*2);
+      ctx.strokeStyle = `rgba(255,60,80,${warn * 0.6})`;
+      ctx.lineWidth = 2;
+      ctx.setLineDash([6,6]);
+      ctx.stroke();
+      ctx.setLineDash([]);
+    }
+
+    // Crosshair target inside bubble
+    ctx.save();
+    ctx.strokeStyle = `rgba(180,255,200,${0.15 + b.z*0.25})`;
+    ctx.lineWidth = 0.8;
+    const ch = r * 0.35;
+    ctx.beginPath();
+    ctx.moveTo(px-ch,py); ctx.lineTo(px+ch,py);
+    ctx.moveTo(px,py-ch); ctx.lineTo(px,py+ch);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(px,py,ch*0.55,0,Math.PI*2);
+    ctx.stroke();
+    ctx.restore();
+  }
+}
+
+function drawProjectiles(){
+  for(const p of projectiles){
+    ctx.save();
+    ctx.globalAlpha = p.life * 0.9;
+
+    // Trail
+    ctx.beginPath();
+    ctx.moveTo(p.x, p.y);
+    ctx.lineTo(p.x - p.vx*3, p.y - p.vy*3);
+    ctx.strokeStyle = p.fromLeft===null ? '#ffee66'
+                    : p.fromLeft        ? '#66ffcc' : '#aaff66';
+    ctx.lineWidth = 2.5 * p.life;
+    ctx.stroke();
+
+    // Head glow
+    const g = ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,8);
+    g.addColorStop(0,'rgba(255,255,200,0.9)');
+    g.addColorStop(1,'rgba(255,255,100,0)');
+    ctx.fillStyle = g;
+    ctx.beginPath();
+    ctx.arc(p.x,p.y,8*p.life,0,Math.PI*2);
+    ctx.fill();
+
+    ctx.restore();
+  }
+}
+
+function drawParticles(){
+  for(const p of particles){
+    ctx.save();
+    ctx.globalAlpha = p.life * 0.85;
+    ctx.fillStyle = `hsl(${p.hue},90%,70%)`;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.size * p.life, 0, Math.PI*2);
+    ctx.fill();
+    ctx.restore();
+  }
+}
+
+function drawReticle(){
+  // Crosshair at screen center
+  ctx.save();
+  ctx.strokeStyle = 'rgba(120,255,160,0.35)';
+  ctx.lineWidth = 1;
+  const sz = Math.min(W,H)*0.025;
+  ctx.beginPath();
+  ctx.moveTo(CX-sz,CY); ctx.lineTo(CX-sz*0.3,CY);
+  ctx.moveTo(CX+sz*0.3,CY); ctx.lineTo(CX+sz,CY);
+  ctx.moveTo(CX,CY-sz); ctx.lineTo(CX,CY-sz*0.3);
+  ctx.moveTo(CX,CY+sz*0.3); ctx.lineTo(CX,CY+sz);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.arc(CX,CY,sz*0.5,0,Math.PI*2);
+  ctx.stroke();
+  ctx.restore();
+}
+
+// Scanline overlay — drawn once on a separate pass
+function drawScanlines(){
+  ctx.save();
+  ctx.globalAlpha = 0.04;
+  ctx.fillStyle = '#000';
+  for(let y=0;y<H;y+=4){
+    ctx.fillRect(0,y,W,2);
+  }
+  ctx.restore();
+}
+
+// ── GAME LOOP ─────────────────────────────────────────────────────────────────
+function loop(ts){
+  if(!running) return;
+  const dt = Math.min(ts - lastTime, 24);  // tighter clamp — 24ms max step
+  lastTime = ts;
+
+  update(dt);
+
+  drawBackground();
+  drawTunnel();
+  drawBubbles();
+  drawProjectiles();
+  drawParticles();
+  drawReticle();
+  drawScanlines();
+
+  raf = requestAnimationFrame(loop);
+}
+
+// ── GAME CONTROL ─────────────────────────────────────────────────────────────
+function startGame(){
+  score = 0; lives = 3; depth = 0; gameTime = 0;
+  bubbles = []; projectiles = []; particles = [];
+  tunnelPhase = 0;
+  nextBgTimer = 0;
+  bgUrl = randomCorpusUrl(); bgImg = getImage(bgUrl); bgAlpha = 0;
+
+  document.getElementById('hScore').textContent = '0';
+  document.getElementById('hDepth').textContent = '0';
+  document.getElementById('hLives').textContent = '♦♦♦';
+  document.getElementById('overlay').style.display  = 'none';
+  document.getElementById('gameover').style.display = 'none';
+
+  running = true;
+  lastTime = performance.now();
+  raf = requestAnimationFrame(loop);
+}
+
+function endGame(){
+  running = false;
+  cancelAnimationFrame(raf);
+  document.getElementById('goScore').textContent = score;
+  document.getElementById('goDepth').textContent = Math.floor(depth);
+  document.getElementById('gameover').style.display = 'flex';
+}
+
+function restartGame(){ startGame(); }
+
+document.getElementById('startBtn').addEventListener('click', startGame);
+document.getElementById('startBtn').addEventListener('touchend', e=>{
+  e.preventDefault(); startGame();
+},{passive:false});
+
+// Initial background draw on title screen
+(function titleDraw(){
+  const url = randomCorpusUrl();
+  const img = getImage(url);
+  function draw(){
+    ctx.fillStyle='#020a04';
+    ctx.fillRect(0,0,W,H);
+    if(img.complete && img.naturalWidth>0){
+      const iw=img.naturalWidth,ih=img.naturalHeight;
+      const s=Math.max(W/iw,H/ih);
+      ctx.globalAlpha=0.18;
+      ctx.drawImage(img,(W-iw*s)/2,(H-ih*s)/2,iw*s,ih*s);
+      ctx.globalAlpha=1;
+    } else {
+      requestAnimationFrame(draw);
+    }
+  }
+  img.onload = draw;
+  draw();
+})();
+</script>
+</body>
+</html>
