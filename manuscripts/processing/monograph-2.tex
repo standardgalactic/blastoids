@@ -1,0 +1,965 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage{mathpazo}
+
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{mathtools}
+\usepackage{stmaryrd}
+\usepackage[margin=1.2in]{geometry}
+\usepackage{setspace}
+\onehalfspacing
+\usepackage{microtype}
+\usepackage{url}
+\usepackage{hyperref}
+\usepackage{cleveref}
+\hypersetup{colorlinks=true,linkcolor=black,citecolor=black,urlcolor=black}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{float}
+\usepackage{tikz-cd}
+\tikzcdset{arrow style=math font}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{axiom}[theorem]{Axiom}
+
+\title{\textbf{Process, Projection, and Power}\\[0.5em]
+\normalsize Toward a Unified Ontology of Choice, Causality, and Value}
+\author{Flyxion}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+This paper develops a unified structural framework for understanding choice, value, money, power, and care as emergent properties of a deeper process ontology. Building on a tripartite distinction between causality, choice, and change, we formalize the self as a temporally extended structure defined by irreversible history and constrained possibility. From this basis, we derive a model of economic systems in which money appears as a projection of a high-dimensional possibility space into a scalar domain, enabling coordination while necessarily introducing compression and loss of structural information.
+
+We show that this compression induces systematic distortions, giving rise to extractive dynamics in which scalar value increases while structural richness decreases. By introducing preference fields and recursive update dynamics, we demonstrate how such distortions become self-reinforcing through feedback loops. Power is then formalized as a higher-order operator acting on the geometry of possibility itself, capable of transforming the generative and evaluative structures of the system.
+
+Finally, we define care as the preservation of structural richness across histories, possibilities, and preference fields, and show that it cannot be reduced to scalar valuation. We propose a class of care-aligned systems characterized by higher-dimensional valuation mappings, constrained generative operators, and stabilized preference dynamics. The resulting framework unifies temporal asymmetry, agency, economic coordination, and ethical alignment within a single formal structure, suggesting a path toward systems that maintain coherence without sacrificing adaptability.
+\end{abstract}
+
+\tableofcontents
+\newpage
+
+\section{Introduction: From Objects to Processes}
+
+Modern systems of thought and organization are characterized by a persistent fragmentation. Physics describes a world of causality without agency, economics models value without meaning, and philosophy struggles to reconcile subjective experience with objective structure. The result is a landscape of partial models, each internally coherent yet collectively insufficient.
+
+At the center of this fragmentation lies a misidentification of the fundamental unit of analysis. Traditional frameworks take objects, states, or quantities as primary, treating change as a secondary phenomenon. However, both experience and formal analysis suggest the opposite: that what is fundamental is not the static entity, but the transition from one configuration to another. Reality, on this view, is constituted by processes rather than things.
+
+This paper adopts such a process ontology and develops its consequences across multiple domains. We begin from a minimal triad: causality, corresponding to third-person structure; choice, corresponding to first-person agency; and change, corresponding to the transition between them. These elements are treated as irreducible and mutually defining, forming the basis for a unified account of both physical and experiential phenomena.
+
+From this starting point, we define the self not as a substance but as a structure composed of two components: an irreversible history of events and a constrained space of possible futures. This formulation captures the temporal asymmetry inherent in experience and provides a natural foundation for modeling agency. The evolution of possibility is then shown to depend on preference fields, which deform the space of admissible transformations through recursive feedback.
+
+Within this framework, economic systems are reinterpreted as mechanisms for coordinating transformations in a shared possibility space. Money emerges as a projection of this space into a scalar domain, enabling efficient coordination at the cost of representational fidelity. This projection is necessarily lossy, collapsing multidimensional structures into a single metric and thereby obscuring distinctions that are critical to long-term system integrity.
+
+The consequences of this compression are profound. We demonstrate that it induces extractive dynamics, in which transformations that degrade structural richness are systematically favored when they produce higher scalar valuations. Through recursive preference dynamics and technological amplification, these patterns become self-reinforcing, leading to a divergence between value as represented within the system and care as experienced by agents.
+
+To address this divergence, we introduce a formal account of power as the capacity to transform the structures that define possibility, generation, and valuation. Power operates not within the space of choices, but on the geometry of that space itself. This perspective allows us to analyze institutional and technological change as transformations of the underlying system rather than mere selections within it.
+
+Finally, we propose a framework for care-aligned systems, defined by their ability to preserve structural richness across time. Such systems require moving beyond scalar valuation toward higher-dimensional representations, constraining generative processes to avoid systematic degradation, and stabilizing preference dynamics against extractive feedback. These conditions are not external ethical constraints, but structural properties of systems that maintain coherence under transformation.
+
+\section{The Hard Problem and the Primacy of Time}
+
+The persistence of the so-called Hard Problem of consciousness is not, in the present account, attributed to any deficiency in empirical observation, nor to any incompleteness in the mathematical formalism of contemporary physics, but rather to a categorical mismatch between the structures used to describe reality and the structures through which reality is experienced. The problem arises precisely at the interface between two incompatible descriptive regimes: a third-person framework in which all states are equally accessible within an atemporal coordinate system, and a first-person framework in which only a single, privileged moment is ever given.
+
+In the third-person description, as formalized within physics and computational theory, time appears as a parameter indexing states within a model. No moment is intrinsically distinguished; any designation of ``now'' is a matter of coordinate choice rather than ontological status. The totality of the system may, in principle, be described as a trajectory or even as a static object embedded within a higher-dimensional configuration space. Within such a representation, the asymmetry between past and future is not fundamental, but emerges, if at all, as a secondary statistical or thermodynamic feature.
+
+By contrast, the first-person perspective is irreducibly structured by temporal asymmetry. Experience is always given as occurring \emph{now}, with a past that is fixed and accessible only through traces, and a future that is open yet inaccessible in principle. This asymmetry is not an empirical accident but a structural condition of experience itself. There is no meaningful formulation of subjectivity that does not presuppose a directional flow from potential to actual, nor any notion of intentionality that does not depend upon the differentiation between what has occurred and what may yet occur.
+
+The central difficulty, therefore, is not to explain how ``experience'' arises from ``matter,'' but to reconcile these two incompatible treatments of time. On the one hand, a third-person model admits a symmetry in which all moments are equivalent and equally describable. On the other hand, the first-person perspective is characterized by a strict asymmetry in which only a single moment is accessible, and in which the distinction between past and future is absolute. Any attempt to derive the latter from the former encounters an immediate obstruction: the symmetry of the model contains no resources by which to privilege one moment over another.
+
+This suggests that the Hard Problem is, at its core, a problem of temporal ontology. More precisely, it is the problem of reconciling a symmetric description of temporal structure---in which all moments are equally real---with an asymmetric structure of access, in which only a single moment is epistemically and ontologically privileged. The traditional formulation, which asks how subjective qualities arise from objective processes, is thus revealed to be derivative. The deeper question is how a system described in an atemporal manner can give rise to, or be consistent with, a perspective that is intrinsically temporal.
+
+To clarify this, it is useful to distinguish three structural aspects of time, each of which plays a distinct role in the present analysis. The first is the \emph{unicity} of the present: the fact that exactly one moment is experienced as ``now,'' and that this designation cannot be distributed across multiple points in the temporal manifold. The second is the \emph{asymmetry} of time: the fact that experience proceeds in a single direction, from a fixed past toward an open future. The third is the \emph{scale constancy} of temporal flow: the apparent regularity with which this progression occurs, independent of local variations in physical or cognitive state.
+
+In third-person models, none of these features are fundamental. Unicity is absent because no moment is privileged; asymmetry is absent because the equations governing state evolution are typically time-reversal invariant or symmetric at the level of fundamental law; and scale constancy is imposed externally through parameterization rather than arising intrinsically. The very success of these models depends upon their ability to eliminate the special status of any particular temporal position.
+
+However, the practice of science itself presupposes the first-person structure it seeks to abstract away. Measurement, observation, and experimentation are all temporally grounded activities, performed by agents who occupy a particular moment and whose access to information is constrained by that position. The data obtained from such activities are always indexed to a present, even if the models constructed from them subsequently erase that index. Thus, the third-person description is not ontologically prior to the first-person perspective, but is instead constructed from it as an abstraction.
+
+This inversion has significant consequences. If the first-person perspective is taken as foundational in this sense, then the asymmetry of time cannot be regarded as a mere emergent property of statistical mechanics or coarse-grained description. Rather, it must be understood as a primary feature of reality, one that is subsequently obscured---but not eliminated---by the symmetries of mathematical representation.
+
+The implication is that any adequate resolution of the Hard Problem must operate at the level of process rather than state. A state-based ontology, in which reality is composed of configurations related by atemporal relations, lacks the resources to account for the directional, irreversible character of experience. What is required instead is an ontology in which the fundamental entities are transitions---events that carry an intrinsic orientation from potentiality to actuality.
+
+Within such an ontology, the distinction between first-person and third-person perspectives can be reinterpreted as a distinction between two complementary descriptions of the same underlying process. The third-person description captures the lawful structure of transitions, abstracted from any particular vantage point. The first-person description captures the lived traversal of those transitions, in which the openness of the future and the fixity of the past are directly encountered.
+
+The Hard Problem is thereby reframed. It is no longer a question of how subjective experience is generated by objective processes, but of how two different descriptions of process---one symmetric and global, the other asymmetric and local---can be understood as aspects of a single coherent structure. The task is not to reduce one to the other, but to articulate the relationship between them in a manner that preserves the essential features of both.
+
+In the sections that follow, this articulation will be developed by introducing a formal account of causality as field dynamics, a calculus of irreversible events capturing temporal asymmetry, and a theory of choice as selective traversal within a structured space of possibilities. Together, these will provide the basis for a unified process ontology in which the asymmetry of time, the structure of agency, and the geometry of value can be understood within a single coherent framework.
+
+\section{First-Person and Third-Person Structure}
+
+\begin{definition}[First-Person Perspective]
+A perspective characterized by temporal locality, irreversibility, and bounded epistemic access to future states.
+\end{definition}
+
+\begin{definition}[Third-Person Perspective]
+A perspective characterized by global accessibility, model-based prediction, and atemporal representation of states.
+\end{definition}
+
+The first-person perspective is defined by its inhabitation of a particular moment: the present is not a coordinate but a locus of transition. The third-person perspective abstracts over all moments equally, treating temporal position as a parameter rather than a constraint. These two perspectives are not competing theories of the same object, but differently structured descriptions of the same underlying process.
+
+\section{Choice, Change, and Causality}
+
+Having established that the Hard Problem is fundamentally a problem of temporal ontology, we now introduce the structural triad through which this ontology may be formalized. The concepts of \emph{choice}, \emph{change}, and \emph{causality} are not to be treated as independent explanatory primitives, nor as reducible to one another, but rather as mutually implicating aspects of a single processual substrate. Each captures a distinct projection of the same underlying structure, and it is only in their joint consideration that the asymmetry of time, the structure of agency, and the regularity of physical law can be coherently articulated.
+
+\begin{definition}[Causality]
+Causality is the structured set of admissible transitions governing the evolution of a system. Formally, it is a rule or operator
+\[
+\mathcal{C} : X_t \rightarrow \mathcal{P}(X_{t+\Delta t}),
+\]
+mapping a present configuration $X_t$ to a set of possible subsequent configurations.
+\end{definition}
+
+\begin{definition}[Choice]
+Choice is a selection operator acting within the admissible set defined by causality. Given $X_{t+\Delta t} \in \mathcal{C}(X_t)$, choice corresponds to the operation
+\[
+\mathrm{Ch}_t : \mathcal{C}(X_t) \rightarrow X_{t+\Delta t},
+\]
+which selects a particular realization from the space of possibilities.
+\end{definition}
+
+\begin{definition}[Change]
+Change is the irreversible actualization of a selected transition. It is the mapping
+\[
+\mathcal{T}_t : (X_t, X_{t+\Delta t}) \mapsto X_{t+1},
+\]
+together with the update of a historical record
+\[
+H_{t+1} = H_t \cdot (X_t \rightarrow X_{t+\Delta t}),
+\]
+which preserves the order of occurrence.
+\end{definition}
+
+\begin{proposition}
+The triad $(\mathcal{C}, \mathrm{Ch}, \mathcal{T})$ is non-reducible in the sense that no element can be derived from the other two without loss of structural information.
+\end{proposition}
+
+\begin{proof}
+Suppose that choice were reducible to causality and change. Then the selection of a particular transition would be fully determined by the admissible set and the act of actualization. However, the admissible set $\mathcal{C}(X_t)$ contains multiple elements by definition, and change $\mathcal{T}_t$ presupposes the selection of one such element. Without an independent selection operator, the transition from multiplicity to singularity cannot be specified. Conversely, suppose that causality were reducible to choice and change. The absence of certain transitions in the observed history does not imply their impossibility; it merely reflects that they were not selected. Thus the constraint structure cannot be inferred solely from realized trajectories. Finally, suppose that change were reducible to causality and choice. The distinction between past and future would be lost, as no record of ordering would be preserved. Therefore, each element of the triad encodes information not contained in the others, and the triad is non-reducible.
+\end{proof}
+
+\section{Field Dynamics: The RSVP Substrate}
+
+Let $\Phi(x,t)$ denote scalar density, $\mathbf{v}(x,t)$ vector flow, and $S(x,t)$ entropy.
+
+\begin{definition}[RSVP State]
+An RSVP state at time $t$ is given by the triple
+\[
+X_t = (\Phi(\cdot,t),\, \mathbf{v}(\cdot,t),\, S(\cdot,t)),
+\]
+where $\Phi : \mathbb{R}^n \to \mathbb{R}$, $\mathbf{v} : \mathbb{R}^n \to \mathbb{R}^n$, and $S : \mathbb{R}^n \to \mathbb{R}$.
+\end{definition}
+
+The governing equations are:
+\begin{equation}
+\partial_t \Phi = D_\Phi \nabla^2 \Phi - \nabla \cdot (\Phi \mathbf{v}) + R_\Phi(\Phi) - \lambda_\Phi S,
+\end{equation}
+\begin{equation}
+\partial_t \mathbf{v} = -(\mathbf{v} \cdot \nabla)\mathbf{v} + \nu \nabla^2 \mathbf{v} - \nabla \Phi + \mathcal{T}(\mathbf{v}),
+\end{equation}
+\begin{equation}
+\partial_t S = D_S \nabla^2 S + \sigma(\Phi, \mathbf{v}) - \gamma S.
+\end{equation}
+
+The scalar field $\Phi$ encodes the distribution of structured density. The vector field $\mathbf{v}$ encodes directional flow. The entropy field $S$ tracks dispersal of structured information. Causality is identified with the evolution operator defined by these dynamics.
+
+\begin{proposition}
+The RSVP evolution defines a causal structure $\mathcal{C}$ over the space of field configurations.
+\end{proposition}
+
+\begin{proof}
+Given an initial configuration $X_t$, the system of PDEs defines a flow on the space of admissible field configurations. For each admissible set of initial conditions and boundary constraints, there exists a corresponding set of solutions $X_{t+\Delta t}$. This mapping from initial conditions to solution space constitutes the admissible transition structure $\mathcal{C}(X_t)$.
+\end{proof}
+
+\section{Event Dynamics: Irreversibility and History}
+
+\begin{definition}[Event-Extended State]
+An event-extended state is a triple
+\[
+\Sigma_t = (X_t,\, \Omega_t,\, H_t),
+\]
+where $X_t$ is the RSVP field configuration, $\Omega_t$ is the set of admissible events at time $t$, and $H_t$ is an ordered sequence of past events.
+\end{definition}
+
+\begin{definition}[Event Update]
+Given $\Sigma_t$ and a selected event $\omega_t \in \Omega_t$, the update rule is
+\[
+\Sigma_t \rightarrow \Sigma_{t+1} = (X_{t+1}, \Omega_{t+1}, H_{t+1}),
+\]
+where
+\[
+X_{t+1} = \mathcal{E}(X_t, \omega_t), \qquad H_{t+1} = H_t \cdot \omega_t,
+\]
+and $\Omega_{t+1}$ is derived from the updated field configuration $X_{t+1}$.
+\end{definition}
+
+\begin{axiom}[Irreversibility]
+The history $H_t$ is append-only. There exists no operation that removes an event from $H_t$ without changing the identity of the system.
+\end{axiom}
+
+\begin{proposition}
+The inclusion of $H_t$ induces a partial ordering on the space of states.
+\end{proposition}
+
+\begin{proof}
+Define a relation $\preceq$ such that $\Sigma_t \preceq \Sigma_{t'}$ if and only if $H_t$ is a prefix of $H_{t'}$. This relation is reflexive, antisymmetric, and transitive, and therefore defines a partial order corresponding to temporal progression.
+\end{proof}
+
+\begin{definition}[Identity]
+The identity of a system at time $t$ is given by its history $H_t$.
+\end{definition}
+
+\section{The Self as History and Horizon}
+
+\begin{definition}[Self]
+The self at time $t$ is defined as the ordered pair
+\[
+\mathcal{S}_t = (H_t,\, \Omega_t),
+\]
+where $H_t$ is the ordered history of realized events and $\Omega_t$ is the structured set of admissible future events.
+\end{definition}
+
+\begin{proposition}
+The self is invariant under transformations of $X_t$ that preserve $(H_t, \Omega_t)$.
+\end{proposition}
+
+\begin{proof}
+If two states $\Sigma_t = (X_t, \Omega_t, H_t)$ and $\Sigma'_t = (X'_t, \Omega_t, H_t)$ share identical histories and possibility structures, then by definition $\mathcal{S}_t = \mathcal{S}'_t$. Identity is not determined uniquely by $X_t$.
+\end{proof}
+
+\begin{definition}[Temporal Boundary Operator]
+The temporal boundary operator $\partial_t$ maps the self $\mathcal{S}_t = (H_t, \Omega_t)$ to the interface at which selection occurs:
+\[
+\partial_t \mathcal{S}_t = (\Omega_t \rightarrow H_{t+1}),
+\]
+representing the transformation of possibility into history.
+\end{definition}
+
+\begin{proposition}
+Agency is the internal perspective on the selection operator $\mathrm{Ch}_t$.
+\end{proposition}
+
+\section{Preference Fields and the Endogenous Evolution of Possibility}
+
+In the preceding sections, the possibility space $\Omega_t$ was treated as a structured domain from which selections are made. We now make explicit the mechanism by which $\Omega_t$ is reshaped by prior acts of selection.
+
+We introduce a preference field $\Psi_t$ defined over $\Omega_t$, which encodes the differential weighting of possibilities induced by prior events. The field evolves under:
+\[
+\Psi_{t+1} = \mathcal{F}(\Psi_t, \omega_t).
+\]
+
+The future possibility space is endogenously generated:
+\[
+\Omega_{t+1} = \mathcal{G}(X_{t+1}, \Psi_{t+1}).
+\]
+
+\begin{proposition}
+The evolution of $\Omega_t$ under the action of $\Psi_t$ induces path dependence in the space of future possibilities.
+\end{proposition}
+
+\begin{proof}
+Since $\Psi_{t+1} = \mathcal{F}(\Psi_t, \omega_t)$ depends explicitly on the selected event $\omega_t$, and $\Omega_{t+1} = \mathcal{G}(X_{t+1}, \Psi_{t+1})$, the structure of $\Omega_{t+1}$ depends on the sequence of prior selections encoded in $H_t$. Different histories leading to identical configurations $X_t$ may yield distinct possibility spaces, establishing path dependence.
+\end{proof}
+
+\begin{remark}
+The introduction of the preference field $\Psi_t$ transforms the ontology from one of selection over a fixed domain to one of co-evolution between selection and possibility. This provides a formal basis for understanding learning, adaptation, and creativity within the unified process framework.
+\end{remark}
+
+\section{Money as Projection and the Externalization of Possibility}
+
+Consider a collection of agents $i \in I$, each possessing an individual possibility space $\Omega_t^{(i)}$, history $H_t^{(i)}$, and preference field $\Psi_t^{(i)}$. The collective system induces an aggregate possibility structure $\Omega_t^{\mathrm{agg}}$.
+
+Money arises as a mapping
+\[
+\mathcal{M}_t : \Omega_t^{\mathrm{agg}} \rightarrow \mathbb{R},
+\]
+assigning to each admissible transformation a scalar quantity representing its accessibility within the current system.
+
+\begin{proposition}
+The monetary mapping $\mathcal{M}_t$ is non-injective and non-isometric with respect to the intrinsic geometry of $\Omega_t^{\mathrm{agg}}$.
+\end{proposition}
+
+\begin{proof}
+Since $\Omega_t^{\mathrm{agg}}$ is high-dimensional, any mapping into $\mathbb{R}$ necessarily identifies multiple distinct elements with the same scalar value, establishing non-injectivity. Distances within $\Omega_t^{\mathrm{agg}}$ cannot in general be preserved under such a projection, establishing non-isometry.
+\end{proof}
+
+The effective possibility space available to agent $i$ with monetary capacity $m_t^{(i)}$ is:
+\[
+\Omega_t^{(i,\mathrm{eff})} = \{ \omega \in \Omega_t^{\mathrm{agg}} \mid \mathcal{M}_t(\omega) \leq m_t^{(i)} \}.
+\]
+
+\begin{proposition}
+Monetary inequality induces asymmetry in accessible possibility spaces across agents.
+\end{proposition}
+
+\section{Power as Geometry of Constraint and Transformation}
+
+\begin{definition}[Power]
+Power is the capacity to effect transformations on the tuple $(\Omega_t^{\mathrm{agg}}, \mathcal{G}, \mathcal{M}_t)$, thereby altering the structure, generation, or valuation of possibilities.
+\end{definition}
+
+We introduce a transformation operator
+\[
+\mathcal{T}_t : (\Omega_t^{\mathrm{agg}}, \mathcal{G}, \mathcal{M}_t) \rightarrow (\Omega_t^{\mathrm{agg}\prime}, \mathcal{G}', \mathcal{M}_t').
+\]
+
+\begin{proposition}
+Power can alter the dimensionality and topology of $\Omega_t^{\mathrm{agg}}$.
+\end{proposition}
+
+\begin{definition}[Preference-Level Power]
+Preference-level power is the capacity to influence the update rule $\mathcal{F}$ governing the evolution of $\Psi_t^{(i)}$.
+\end{definition}
+
+\begin{proposition}
+Preference-level power induces indirect control over $\Omega_t^{\mathrm{agg}}$ through recursive deformation.
+\end{proposition}
+
+\begin{proposition}
+Power that modifies $\mathcal{M}_t$ without increasing its representational fidelity amplifies extractive dynamics.
+\end{proposition}
+
+\section{Extraction, Compression, and the Divergence of Value and Care}
+
+\begin{definition}[Compression-Induced Equivalence]
+Two transformations $\omega_1, \omega_2 \in \Omega_t^{\mathrm{agg}}$ are compression-equivalent if $\mathcal{M}_t(\omega_1) = \mathcal{M}_t(\omega_2)$ despite differing in their internal structure or long-term consequences.
+\end{definition}
+
+\begin{definition}[Extraction]
+A transformation $\omega$ is extractive if it increases its scalar valuation $\mathcal{M}_t(\omega)$ while reducing the structural richness $\mathcal{R}$ of the system:
+\[
+\Delta \mathcal{M}_t(\omega) > 0 \quad \text{and} \quad \Delta \mathcal{R}(\omega) < 0.
+\]
+\end{definition}
+
+\begin{proposition}
+If $\mathcal{M}_t$ is insensitive to variations in $\mathcal{R}$, then extractive transformations are not penalized and may be systematically favored.
+\end{proposition}
+
+\begin{proposition}
+Repeated selection of extractive transformations induces a feedback loop biasing $\Psi_t$ toward further extraction.
+\end{proposition}
+
+\begin{definition}[Care]
+Care is the maintenance or increase of structural richness $\mathcal{R}$ within the system, particularly with respect to the coherence of histories $H_t$, the diversity of possibilities $\Omega_t$, and the integrity of preference fields $\Psi_t$.
+\end{definition}
+
+\begin{proposition}
+There exists no scalar function $f : \Omega_t^{\mathrm{agg}} \rightarrow \mathbb{R}$ that fully captures care without loss of information.
+\end{proposition}
+
+\begin{proof}
+Care depends on relational and higher-order structural properties, including dependencies between elements of $\Omega_t$, temporal continuity of $H_t$, and the evolution of $\Psi_t$. Any scalar function collapses these into a single dimension, eliminating distinctions essential to care.
+\end{proof}
+
+\section{Toward Care-Aligned Systems}
+
+\begin{definition}[Care-Aligned Valuation]
+A valuation mapping $\mathcal{V}_t : \Omega_t^{\mathrm{agg}} \rightarrow \mathcal{S}$, for some structured space $\mathcal{S}$, is care-aligned if it preserves to a specified degree the structural richness $\mathcal{R}$ of transformations.
+\end{definition}
+
+\begin{proposition}
+Non-total ordering in $\mathcal{S}$ prevents the systematic preference of extractive transformations based solely on scalar dominance.
+\end{proposition}
+
+\begin{definition}[Care-Constrained Generation]
+A generative operator $\mathcal{G}$ is care-constrained if for admissible transformations $\omega$:
+\[
+\mathbb{E}[\Delta \mathcal{R}(\omega)] \geq -\epsilon
+\]
+for some small tolerance $\epsilon \geq 0$.
+\end{definition}
+
+\begin{definition}[Stabilized Preference Dynamics]
+An update rule $\mathcal{F}$ is stabilized if it includes corrective terms that penalize persistent reductions in $\mathcal{R}$.
+\end{definition}
+
+\begin{remark}
+Care-aligned systems correspond to regimes in which entropy production is balanced by the preservation of coherent structure, preventing both rigid stagnation and uncontrolled dissipation.
+\end{remark}
+
+\section{The Hard Problem Revisited: Dual Aspect of Indeterminacy}
+
+\begin{definition}[Dual Aspect of Indeterminacy]
+An indeterminate transition $\omega_t$ admits two complementary descriptions: as randomness when viewed externally, and as choice when viewed internally.
+\end{definition}
+
+\begin{proposition}
+Choice and randomness are observationally dual descriptions of indeterminate transitions within a process ontology.
+\end{proposition}
+
+\begin{proof}
+Let $\omega_t$ be a transition selected from $\Omega_t$ with no deterministic mapping from prior states. For an external observer lacking access to $(H_t, \Psi_t)$, the selection appears probabilistic. For an internal observer with access to $\Omega_t$ and $\Psi_t$, the same selection is experienced as the resolution of competing possibilities. The same transition thus admits both descriptions depending on available information and perspective.
+\end{proof}
+
+\begin{definition}[Temporal Asymmetry]
+Time is the ordered sequence of irreversible transitions in which histories accumulate and possibility spaces are transformed.
+\end{definition}
+
+\begin{proposition}
+Consciousness corresponds to the internal experience of temporal asymmetry in the evolution of $(H_t, \Omega_t, \Psi_t)$.
+\end{proposition}
+
+\section{The Kinetic-Event Synthesis}
+
+The framework developed throughout this inquiry is consolidated under the \emph{Kinetic-Event Synthesis} (KES). The name encodes the core irreversible move---the passage of structured potentiality into recorded event history---which serves as the primitive operation underlying all observable structure. The framework is grounded in the transformation of structured potentiality into irreversible event history, which serves as the primitive operation underlying all observable structure.
+
+\begin{definition}[KES State Space]
+A Kinetic-Event system $\mathfrak{S}_t$ is defined as the tuple
+\[
+\mathfrak{S}_t = (X_t,\, \Omega_t,\, H_t,\, \Psi_t,\, \mathcal{M}_t,\, \mathcal{G},\, \mathcal{F}),
+\]
+where each component evolves under a coupled dynamical system and is mutually interdependent. Specifically: $X_t = (\Phi, \mathbf{v}, S)$ is the RSVP field configuration; $\Omega_t$ is the structured manifold of admissible transitions; $H_t$ is the irreversible append-only event history; $\Psi_t$ is the preference field governing agent-substrate interaction; $\mathcal{M}_t$ is the projection functor mapping transitions to scalar valuations; $\mathcal{G}$ is the generative operator; and $\mathcal{F}$ is the recursive update operator for the preference field.
+\end{definition}
+
+\begin{proposition}
+All structural invariants and emergent behaviors of the system arise as specific projections of the KES state $\mathfrak{S}_t$.
+\end{proposition}
+
+\begin{remark}
+KES treats the transition $\Omega_t \to H_{t+1}$ as the primary ontological unit, avoiding the fragmentation inherent in traditional dualistic models and providing a common formal language for causality, agency, economic coordination, and care.
+\end{remark}
+
+\subsection{Work-Potential and the Geometry of Possibility}
+
+\begin{definition}[Work-Potential]
+The energy required for a transformation $\omega \in \Omega_t$ is the infimum of the action over admissible paths:
+\[
+E(\omega) = \inf \int_\omega \mathcal{L}(X, \dot{X}) \, dt.
+\]
+\end{definition}
+
+\begin{proposition}
+The work-potential $E$ induces a geodesic structure on the manifold of admissible transformations, with minimal-energy paths corresponding to dynamically preferred transitions.
+\end{proposition}
+
+\begin{definition}[Valuation Consistency]
+A projection $\mathcal{M}_t$ is stable if it maintains proportionality with the work-potential:
+\[
+\mathcal{M}_t(\omega) \propto E(\omega).
+\]
+\end{definition}
+
+\begin{proposition}
+Systemic instability is a direct consequence of divergence between the valuation functor $\mathcal{M}_t$ and the physical work-potential $E$.
+\end{proposition}
+
+\subsection{Institutional Constraint Fields}
+
+\begin{definition}[Institutional Operator]
+An institution is a persistent constraint field $\mathcal{I}_t$ acting on the aggregate possibility space:
+\[
+\mathcal{I}_t : \Omega_t^{\mathrm{agg}} \to \Omega_t^{\mathrm{agg}}.
+\]
+\end{definition}
+
+\begin{proposition}
+The operator $\mathcal{I}_t$ functions as a boundary condition for the generative operator $\mathcal{G}$, pruning the tree of realizable events.
+\end{proposition}
+
+\begin{definition}[Structural Power in KES]
+Structural power is the capacity to induce nontrivial evolution in the constraint field:
+\[
+\frac{d}{dt}\mathcal{I}_t \neq 0,
+\]
+particularly in ways that alter the topology or accessibility of $\Omega_t^{\mathrm{agg}}$.
+\end{definition}
+
+\subsection{The Goodhart Divergence and Care}
+
+\begin{definition}[Projection Error]
+The projection error $\varepsilon(\omega)$ measures the information lost when mapping the process $\omega$ into the valuation space under $\mathcal{M}_t$.
+\end{definition}
+
+\begin{proposition}
+In systems where optimization is performed solely on the projection $\mathcal{M}_t$, the system enters a Goodhart regime in which utility is decoupled from structural preservation.
+\end{proposition}
+
+\begin{definition}[Care Functional]
+Care is a non-factorizable functional
+\[
+\mathcal{C}_t : \mathfrak{S}_t \to \mathbb{R}
+\]
+that evaluates the preservation of structural richness $\mathcal{R}$ across the transition $H_t \to H_{t+1}$.
+\end{definition}
+
+\begin{remark}
+Care is identified as a structural invariant. A system that optimizes for $\mathcal{M}_t$ at the expense of $\mathcal{C}_t$ exhausts its own substrate by collapsing the higher-order cohomological structure that sustains adaptive capacity.
+\end{remark}
+
+\section{Hard Randomness and the Internal Measure}
+
+We now sharpen the dual-aspect result of Section~13 into its most precise KES formulation. The symmetry between external randomness and internal choice corresponds to two canonical measures over the same possibility space.
+
+\begin{definition}[External Measure]
+The external measure over $\Omega_t$ is a probability distribution
+\[
+\mu_{\mathrm{ext}} : \mathcal{B}(\Omega_t) \to [0,1],
+\]
+where $\mathcal{B}(\Omega_t)$ is the Borel algebra on the manifold of admissible transitions. This measure encodes the third-person description of how transitions are distributed given observable prior states.
+\end{definition}
+
+\begin{definition}[Internal Traversal]
+The internal traversal is a selection operator
+\[
+\sigma_t : \Omega_t \to \omega_t \in \Omega_t,
+\]
+indexed by the preference field $\Psi_t$ and history $H_t$, representing the first-person passage through possibility space.
+\end{definition}
+
+\begin{proposition}[Hard Randomness Symmetry]
+The external measure $\mu_{\mathrm{ext}}$ and the internal traversal $\sigma_t$ are dual descriptions of the same indeterminate transition, related by the forgetful functor $U : \mathbf{Choice} \to \mathbf{Prob}$:
+\[
+U(\sigma_t) = \mu_{\mathrm{ext}}.
+\]
+\end{proposition}
+
+\begin{proof}
+The functor $U$ discards the internal structure $\Psi_t$ and $H_t$, retaining only the outcome frequency induced by $\sigma_t$ over repeated transitions. The resulting distribution coincides with $\mu_{\mathrm{ext}}$ by construction of the adjunction $(F \dashv U)$ established in Appendix~\ref{app:adjoint}.
+\end{proof}
+
+\begin{remark}
+This symmetry is ``hard'' in the same sense as the Hard Problem: it is not eliminable by further description within either framework. The external observer cannot, in principle, recover $\sigma_t$ from $\mu_{\mathrm{ext}}$ without access to the internal structure. Equivalently, no enrichment of the probabilistic description eliminates the first-person character of the traversal. The gap between $\mu_{\mathrm{ext}}$ and $\sigma_t$ is not epistemic but structural---it corresponds precisely to the information discarded by $U$.
+\end{remark}
+
+\begin{corollary}
+Consciousness, formalized as the internal aspect of $\sigma_t$, is not derivable from $\mu_{\mathrm{ext}}$ within any third-person model. It is preserved only under the right adjoint $F$, which lifts probabilistic descriptions back into structured choice spaces.
+\end{corollary}
+
+
+
+The framework developed in this work unifies a set of domains traditionally treated as distinct: temporal structure, agency, economic coordination, power dynamics, and ethical alignment. By grounding each in a shared process ontology, we have shown that their apparent separation arises from differences in projection and descriptive perspective rather than from fundamentally different underlying structures.
+
+The deepest result is this: all observable distinctions---between subjective experience and objective physics, between value and care, between coordination and extraction---arise from the structure of the mappings used to represent a common underlying process, not from genuine ontological separation. The Hard Problem dissolves when consciousness is recognized as the internal aspect of the same temporal asymmetry that makes physics directional. Economic pathology is not a moral failure but a structural consequence of compression.
+
+The practical implications follow accordingly. Stability, alignment, and coherence require operating at the level of the mappings themselves: modifying how possibility is projected, constraining how it is generated, and preserving the invariants that compression conceals.
+
+\appendix
+
+\section{Category-Theoretic Formalization of Possibility and History}
+
+Let $\mathcal{C}$ be a category whose objects are structured possibility spaces and whose morphisms are admissible transformations.
+
+\begin{definition}
+An object $\Omega \in \mathrm{Ob}(\mathcal{C})$ is a structured possibility space equipped with internal constraints.
+\end{definition}
+
+\begin{definition}
+A morphism $\omega : \Omega \to \Omega'$ is an admissible transformation preserving constraint compatibility.
+\end{definition}
+
+\begin{definition}
+A history $H_t$ is a path in $\mathcal{C}$:
+\[
+H_t = \omega_1 \circ \omega_2 \circ \cdots \circ \omega_t.
+\]
+\end{definition}
+
+\begin{proposition}
+Identity is functorial in path space, not object space.
+\end{proposition}
+
+\section{Fibered Structure of Agent-Relative Possibility}
+
+Let $\pi : \mathcal{E} \to \mathcal{B}$ be a fibration where $\mathcal{B}$ is the space of global system states and each fiber $\pi^{-1}(X_t) = \Omega_t^{(i)}$ is an agent-relative possibility space.
+
+\begin{definition}
+Agent-relative possibility spaces form a fibered category over global system states.
+\end{definition}
+
+Preference fields define sections:
+\[
+\Psi_t^{(i)} : X_t \to \Omega_t^{(i)}.
+\]
+
+\begin{proposition}
+Preference evolution corresponds to section deformation in $\mathcal{E}$.
+\end{proposition}
+
+\section{Valuation as Functorial Projection}
+
+Define valuation as a functor:
+\[
+\mathcal{M}_t : \mathcal{C} \to \mathbb{R},
+\]
+where $\mathbb{R}$ is the category with objects real numbers and morphisms order-preserving maps.
+
+\begin{proposition}
+$\mathcal{M}_t$ is not faithful.
+\end{proposition}
+
+\begin{proof}
+Distinct morphisms $\omega_1 \neq \omega_2$ may satisfy $\mathcal{M}_t(\omega_1) = \mathcal{M}_t(\omega_2)$.
+\end{proof}
+
+\begin{proposition}
+$\mathcal{M}_t$ does not preserve limits.
+\end{proposition}
+
+A generalized valuation $\mathcal{V}_t : \mathcal{C} \to \mathcal{S}$ into a structured category $\mathcal{S}$ preserves more relational structure.
+
+\section{Power as Natural Transformation}
+
+Let $\mathcal{M}_t, \mathcal{M}'_t : \mathcal{C} \to \mathbb{R}$ be valuation functors.
+
+\begin{definition}
+Power is a natural transformation:
+\[
+\eta : \mathcal{M}_t \Rightarrow \mathcal{M}'_t.
+\]
+\end{definition}
+
+The naturality square:
+\[
+\begin{tikzcd}
+\mathcal{M}_t(\Omega) \arrow[r, "\mathcal{M}_t(\omega)"] \arrow[d, "\eta_\Omega"'] & \mathcal{M}_t(\Omega') \arrow[d, "\eta_{\Omega'}"] \\
+\mathcal{M}'_t(\Omega) \arrow[r, "\mathcal{M}'_t(\omega)"] & \mathcal{M}'_t(\Omega')
+\end{tikzcd}
+\]
+
+\begin{proposition}
+Power acts on functor space $\mathrm{Fun}(\mathcal{C}, \mathbb{R})$ rather than on object space.
+\end{proposition}
+
+\section{Generative Dynamics as Endofunctor}
+
+\begin{definition}
+$\mathcal{G} : \mathcal{C} \to \mathcal{C}$ is an endofunctor generating future possibility spaces:
+\[
+\Omega_{t+1} = \mathcal{G}(\Omega_t).
+\]
+\end{definition}
+
+\begin{proposition}
+Dynamics correspond to iterated endofunctor application:
+\[
+\Omega_t = \mathcal{G}^t(\Omega_0).
+\]
+\end{proposition}
+
+The care constraint becomes:
+\[
+\mathcal{R}(\mathcal{G}(\Omega)) \geq \mathcal{R}(\Omega) - \epsilon.
+\]
+
+\section{RSVP Embedding}
+
+\begin{definition}
+Each object $\Omega \in \mathcal{C}$ corresponds to a region in field space via an embedding
+\[
+\iota : \mathcal{C} \hookrightarrow \mathcal{F},
+\]
+where $\mathcal{F}$ is a category of RSVP field configurations.
+\end{definition}
+
+Morphisms correspond to field trajectories:
+\[
+\omega : X_t \to X_{t+1}, \qquad \mathcal{C}(\omega) = \int \mathcal{L}(X, \dot{X})\, dt.
+\]
+
+\begin{proposition}
+Monetary valuation approximates the action functional:
+\[
+\mathcal{M}_t(\omega) \approx \mathcal{C}(\omega).
+\]
+\end{proposition}
+
+\section{Sheaf-Theoretic Structure of Local Knowledge}
+
+Let $\mathcal{U}$ be a cover of the system domain. Define a presheaf
+\[
+\mathcal{F}(U) = \text{local possibility structures over } U.
+\]
+
+\begin{definition}
+A sheaf satisfies gluing conditions ensuring consistent global structure from compatible local data.
+\end{definition}
+
+\begin{proposition}
+Scalar valuation $\mathcal{M}_t$ fails the sheaf gluing condition, and thus cannot represent globally coherent structure.
+\end{proposition}
+
+Care-aligned valuation is characterized by sheaf consistency.
+
+\section{Dual Aspect Formalization}
+
+Define two functors:
+\[
+\mathcal{D}_{\mathrm{ext}} : \mathcal{C} \to \mathbf{Prob}, \qquad \mathcal{D}_{\mathrm{int}} : \mathcal{C} \to \mathbf{Choice}.
+\]
+
+\begin{definition}
+The external description yields probability distributions; the internal description yields selection operators.
+\end{definition}
+
+\begin{proposition}
+These are related by a forgetful functor $U : \mathbf{Choice} \to \mathbf{Prob}$ satisfying
+\[
+U \circ \mathcal{D}_{\mathrm{int}} = \mathcal{D}_{\mathrm{ext}}.
+\]
+\end{proposition}
+
+\section{Entropy and Structural Richness}
+
+Define entropy:
+\[
+S(X) = -\sum_i p_i \log p_i.
+\]
+
+\begin{definition}[Heuristic Structural Richness]
+A preliminary measure of structural richness may be expressed as
+\[
+\mathcal{R}_{\mathrm{heur}}(\Omega) = \dim(\Omega) + \mathrm{connectivity}(\Omega) + \mathrm{coherence}(\Omega),
+\]
+serving as an intuitive proxy for the more rigorous cohomological definition introduced in Appendix~\ref{app:sheaf-cohomology}.
+\end{definition}
+
+The fully invariant definition is given cohomologically: $\mathcal{R}(\Omega) := \sum_k (-1)^k \dim H^k(\Omega)$, which reduces under favorable conditions to $\mathcal{R}_{\mathrm{heur}}$.
+
+Extraction satisfies $\Delta \mathcal{M} > 0$ and $\Delta \mathcal{R} < 0$. Care satisfies $\Delta \mathcal{R} \geq 0$.
+
+\section{The Process--Projection--Power Theorem}
+
+\subsection{Statement}
+
+\begin{theorem}[Process--Projection--Power Theorem]
+Let $\mathcal{C}$ be a category of processes. For any domain-specific representation $\mathcal{D}_i : \mathcal{C} \to \mathcal{T}_i$ that is not fully faithful:
+\begin{enumerate}
+\item Distinct processes in $\mathcal{C}$ may become indistinguishable in $\mathcal{T}_i$.
+\item Optimization within $\mathcal{T}_i$ may induce transformations in $\mathcal{C}$ that degrade structural richness $\mathcal{R}$.
+\item Transformations between representations $\mathcal{D}_i \Rightarrow \mathcal{D}_j$ correspond to higher-order operations constituting power.
+\item Care corresponds to preservation of $\mathcal{R}$ under the composition of $\mathcal{D}_i$ and system dynamics.
+\end{enumerate}
+\end{theorem}
+
+\subsection{Proof}
+
+\begin{proof}
+\textbf{(1) Loss of Distinction.} Since $\mathcal{D}_i$ is not fully faithful, there exist morphisms $\omega_1 \neq \omega_2$ in $\mathcal{C}$ such that $\mathcal{D}_i(\omega_1) = \mathcal{D}_i(\omega_2)$.
+
+\textbf{(2) Optimization Distortion.} Define optimization as selection of $\omega \in \mathcal{C}$ maximizing $\mathcal{D}_i(\omega)$. Since $\mathcal{D}_i$ does not preserve $\mathcal{R}$, there exist $\omega_1, \omega_2$ with $\mathcal{D}_i(\omega_1) > \mathcal{D}_i(\omega_2)$ yet $\mathcal{R}(\omega_1) < \mathcal{R}(\omega_2)$. Optimization selects $\omega_1$, decreasing $\mathcal{R}$.
+
+\textbf{(3) Power as Functor Transformation.} A natural transformation $\eta : \mathcal{D}_i \Rightarrow \mathcal{D}_j$ redefines how processes are represented. Power thus operates on $\mathrm{Fun}(\mathcal{C}, \mathcal{T})$ rather than within $\mathcal{C}$.
+
+\textbf{(4) Care as Invariant Preservation.} Since $\mathcal{D}_i$ does not preserve $\mathcal{R}$, care requires constraints on $\mathcal{G}$ or augmentation of $\mathcal{D}_i$. It cannot be enforced solely within $\mathcal{T}_i$.
+\end{proof}
+
+\subsection{Corollaries}
+
+\begin{corollary}[Economic Extraction]
+If $\mathcal{D}_{\mathrm{econ}} : \mathcal{C} \to \mathbb{R}$ is scalar valuation, then optimization induces extractive dynamics whenever $\mathcal{R}$ is not preserved.
+\end{corollary}
+
+\begin{corollary}[Consciousness Duality]
+If $\mathcal{D}_{\mathrm{ext}}$ and $\mathcal{D}_{\mathrm{int}}$ form an adjoint pair, then subjective experience and objective randomness are dual projections of $\mathcal{C}$.
+\end{corollary}
+
+\begin{corollary}[Technological Amplification]
+Increasing computational power increases the evaluation rate of $\mathcal{D}_i$ without increasing faithfulness, thereby amplifying projection-induced distortion.
+\end{corollary}
+
+\subsection{Programmatic Consequence}
+
+Any attempt to design stable, aligned systems must operate at one of three levels:
+\[
+\text{(i)\ Modify } \mathcal{D}_i \qquad \text{(ii)\ Constrain } \mathcal{G} \qquad \text{(iii)\ Preserve } \mathcal{R}.
+\]
+Absent such interventions, systems will systematically drift toward lower structural richness under optimization.
+
+\section{Adjoint Structure of Choice and Probability}
+\label{app:adjoint}
+
+Let $\mathbf{Choice}$ be the category of structured possibility spaces $(\Omega, \Phi)$ with selection operators as morphisms. Let $\mathbf{Prob}$ be the category of measurable spaces with stochastic maps.
+
+Define $U : \mathbf{Choice} \to \mathbf{Prob}$ as the forgetful functor that discards preference structure and retains outcome distributions. Define $F : \mathbf{Prob} \to \mathbf{Choice}$ as the free functor introducing a trivial uniform preference field.
+
+\begin{proposition}
+$(F \dashv U)$ is an adjoint pair with natural isomorphism
+\[
+\mathrm{Hom}_{\mathbf{Choice}}(F(P), C) \cong \mathrm{Hom}_{\mathbf{Prob}}(P, U(C)).
+\]
+\end{proposition}
+
+The unit $\eta : \mathrm{Id}_{\mathbf{Prob}} \Rightarrow U \circ F$ encodes embedding of randomness into structured choice; the counit $\epsilon : F \circ U \Rightarrow \mathrm{Id}_{\mathbf{Choice}}$ encodes collapse of choice into randomness.
+
+\section{Higher-Order Power as 2-Categorical Structure}
+
+Let $\mathbf{Fun}(\mathcal{C}, \mathbb{R})$ be the category of valuation functors. Define a 2-category $\mathcal{P}$ with objects as valuation functors, 1-morphisms as natural transformations $\eta : \mathcal{M} \Rightarrow \mathcal{M}'$, and 2-morphisms as modifications between natural transformations.
+
+\begin{definition}
+Power is a 1-morphism in $\mathcal{P}$. Meta-power is a 2-morphism.
+\end{definition}
+
+\begin{proposition}
+Hierarchies of power correspond to higher morphism levels in $\mathcal{P}$.
+\end{proposition}
+
+\section{Derived RSVP Embedding}
+
+Let $\mathcal{F}$ be a derived stack representing field configurations $(\Phi, \mathbf{v}, S)$ with derived structure encoding higher-order constraints.
+
+\begin{proposition}
+Field evolution corresponds to derived pushforward:
+\[
+\omega_* : \mathcal{F}_t \to \mathcal{F}_{t+1}.
+\]
+\end{proposition}
+
+The action functional is defined on the derived tangent complex:
+\[
+\mathcal{C}(\omega) = \int_\omega \mathcal{L}.
+\]
+
+\begin{remark}
+Derived structure encodes latent constraints and hidden degrees of freedom corresponding to unresolved possibility dimensions.
+\end{remark}
+
+\section{Sheaf Cohomology and Structural Loss}
+\label{app:sheaf-cohomology}
+
+Let $\mathcal{F}$ be a sheaf over domain $\mathcal{U}$ with cohomology groups $H^k(\mathcal{U}, \mathcal{F})$.
+
+\begin{definition}
+Structural richness corresponds to nontrivial cohomology:
+\[
+\mathcal{R} \sim \sum_k \dim H^k(\mathcal{U}, \mathcal{F}).
+\]
+\end{definition}
+
+\begin{proposition}
+Scalar valuation collapses higher cohomology: projection $\mathcal{M}_t : \mathcal{C} \to \mathbb{R}$ eliminates higher-order relational invariants encoded in $H^k$ for $k > 0$.
+\end{proposition}
+
+Extraction corresponds to $\dim H^k \downarrow$.
+
+\section{Entropy as Derived Functor}
+
+Define entropy as the derived global section functor:
+\[
+S = R\Gamma(\mathcal{F}).
+\]
+
+\begin{proposition}
+Entropy measures global inconsistency of local structures: high entropy corresponds to obstruction to global section coherence.
+\end{proposition}
+
+Care corresponds to $R\Gamma(\mathcal{F})$ remaining stable under $\mathcal{G}$.
+
+\section{The $\infty$-Categorical Refinement}
+
+Let $\mathcal{C}$ be an $(\infty,1)$-category of processes, with objects as structured possibility spaces, 1-morphisms as admissible transformations, and higher morphisms encoding equivalences and homotopies between transformations.
+
+\begin{definition}
+A process is an equivalence class of morphisms under higher homotopies in $\mathcal{C}$.
+\end{definition}
+
+Define structural richness as a derived invariant:
+\[
+\mathcal{R}(\Omega) := \sum_k (-1)^k \dim H^k(\Omega).
+\]
+
+All practical representations factor through truncation:
+\[
+\mathcal{D}_i = \tilde{\mathcal{D}}_i \circ \tau_{\leq n}.
+\]
+
+\begin{theorem}[$(\infty,1)$-Categorical Process--Projection--Power Theorem]
+Let $\mathcal{C}$ be an $(\infty,1)$-category of processes and $\mathcal{D}_i$ a truncated functor. Then:
+\begin{enumerate}
+\item $\mathcal{D}_i$ fails to preserve higher homotopy structure.
+\item Optimization in $\mathcal{T}_i$ induces descent along directions invisible to $\tau_{\leq n}$.
+\item Structural richness $\mathcal{R}$ decreases under such descent.
+\item Power corresponds to morphisms in the functor $\infty$-category $\mathrm{Fun}(\mathcal{C}, \mathcal{T})$.
+\end{enumerate}
+\end{theorem}
+
+\begin{theorem}[Unified Structural Principle]
+All apparent ontological distinctions arise from truncations of an underlying $(\infty,1)$-category of processes. Stability, alignment, and coherence correspond to the preservation of derived invariants under these truncations.
+\end{theorem}
+
+\section{Summary Correspondence Table}
+
+\begin{center}
+\begin{tabular}{ll}
+\toprule
+Concept & Formal Structure \\
+\midrule
+Self & $(H_t, \Omega_t)$ \\
+Choice & Selection in $\Omega_t$ \\
+Time & Irreversible morphism sequence \\
+KES state & $\mathfrak{S}_t = (X_t, \Omega_t, H_t, \Psi_t, \mathcal{M}_t, \mathcal{G}, \mathcal{F})$ \\
+Preference field & $\Psi_t$ (distinct from RSVP scalar $\Phi$) \\
+Money & Functor $\mathcal{M}_t : \mathcal{C} \to \mathbb{R}$ \\
+Power & Natural transformation $\eta : \mathcal{M} \Rightarrow \mathcal{M}'$ \\
+Structural power & $\tfrac{d}{dt}\mathcal{I}_t \neq 0$ acting on $\Omega_t^{\mathrm{agg}}$ \\
+Meta-power & 2-morphism in $\mathcal{P}$ \\
+Care & Non-factorizable $\mathcal{C}_t : \mathfrak{S}_t \to \mathbb{R}$ preserving $\mathcal{R}$ \\
+Extraction & $\Delta\mathcal{M} > 0$, $\Delta\mathcal{R} < 0$ under projection \\
+Internal traversal & $\sigma_t : \Omega_t \to \omega_t$ conditioned on $(\Psi_t, H_t)$ \\
+External measure & $\mu_{\mathrm{ext}} : \mathcal{B}(\Omega_t) \to [0,1]$ \\
+Consciousness & $\sigma_t$; not recoverable from $\mu_{\mathrm{ext}}$ via any third-person model \\
+Entropy & $R\Gamma(\mathcal{F})$ (derived global section functor) \\
+Structural richness & $\mathcal{R}(\Omega) = \sum_k (-1)^k \dim H^k(\mathcal{U}, \mathcal{F})$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{thebibliography}{99}
+
+\bibitem{landry_hard_problem}
+Landry, F. (2017).
+\textit{The Hard Problem}.
+Ronin Institute, Del Mar, California.
+
+\bibitem{landry_immanent}
+Landry, F. (2026).
+\textit{Immanent Metaphysics: The Interaction between the Subjective and the Objective}.
+Discussed in \textit{The Jim Rutt Show}, Episode 96.
+
+\bibitem{conway_kochen}
+Conway, J., \& Kochen, S. (2006).
+The Free Will Theorem.
+\textit{Foundations of Physics}, 36(10), 1441--1473.
+
+\bibitem{graeber_debt}
+Graeber, D. (2011).
+\textit{Debt: The First 5,000 Years}.
+Melville House.
+
+\bibitem{searle_consciousness}
+Searle, J. R. (1992).
+\textit{The Rediscovery of the Mind}.
+MIT Press.
+
+\bibitem{kant_pure_reason}
+Kant, I. (1781).
+\textit{Critique of Pure Reason}.
+
+\bibitem{wittgenstein_investigations}
+Wittgenstein, L. (1953).
+\textit{Philosophical Investigations}.
+Blackwell.
+
+\bibitem{lurie_htt}
+Lurie, J. (2009).
+\textit{Higher Topos Theory}.
+Princeton University Press.
+
+\bibitem{jaynes_entropy}
+Jaynes, E. T. (1957).
+Information Theory and Statistical Mechanics.
+\textit{Physical Review}, 106(4), 620--630.
+
+\end{thebibliography}
+
+\end{document}

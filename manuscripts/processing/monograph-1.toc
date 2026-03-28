@@ -1,0 +1,35 @@
+\contentsline {section}{\numberline {1}Introduction: From Objects to Processes}{4}{section.1}%
+\contentsline {section}{\numberline {2}The Hard Problem and the Primacy of Time}{5}{section.2}%
+\contentsline {section}{\numberline {3}First-Person and Third-Person Structure}{7}{section.3}%
+\contentsline {section}{\numberline {4}Choice, Change, and Causality}{7}{section.4}%
+\contentsline {section}{\numberline {5}Field Dynamics: The RSVP Substrate}{8}{section.5}%
+\contentsline {section}{\numberline {6}Event Dynamics: Irreversibility and History}{9}{section.6}%
+\contentsline {section}{\numberline {7}The Self as History and Horizon}{10}{section.7}%
+\contentsline {section}{\numberline {8}Preference Fields and the Endogenous Evolution of Possibility}{10}{section.8}%
+\contentsline {section}{\numberline {9}Money as Projection and the Externalization of Possibility}{11}{section.9}%
+\contentsline {section}{\numberline {10}Power as Geometry of Constraint and Transformation}{11}{section.10}%
+\contentsline {section}{\numberline {11}Extraction, Compression, and the Divergence of Value and Care}{12}{section.11}%
+\contentsline {section}{\numberline {12}Toward Care-Aligned Systems}{12}{section.12}%
+\contentsline {section}{\numberline {13}The Hard Problem Revisited: Dual Aspect of Indeterminacy}{13}{section.13}%
+\contentsline {section}{\numberline {14}Conclusion: Reality as Irreversible Becoming}{13}{section.14}%
+\contentsline {section}{\numberline {A}Category-Theoretic Formalization of Possibility and History}{14}{appendix.A}%
+\contentsline {section}{\numberline {B}Fibered Structure of Agent-Relative Possibility}{14}{appendix.B}%
+\contentsline {section}{\numberline {C}Valuation as Functorial Projection}{15}{appendix.C}%
+\contentsline {section}{\numberline {D}Power as Natural Transformation}{15}{appendix.D}%
+\contentsline {section}{\numberline {E}Generative Dynamics as Endofunctor}{15}{appendix.E}%
+\contentsline {section}{\numberline {F}RSVP Embedding}{16}{appendix.F}%
+\contentsline {section}{\numberline {G}Sheaf-Theoretic Structure of Local Knowledge}{16}{appendix.G}%
+\contentsline {section}{\numberline {H}Dual Aspect Formalization}{16}{appendix.H}%
+\contentsline {section}{\numberline {I}Entropy and Structural Richness}{17}{appendix.I}%
+\contentsline {section}{\numberline {J}The Process--Projection--Power Theorem}{17}{appendix.J}%
+\contentsline {subsection}{\numberline {J.1}Statement}{17}{subsection.J.1}%
+\contentsline {subsection}{\numberline {J.2}Proof}{17}{subsection.J.2}%
+\contentsline {subsection}{\numberline {J.3}Corollaries}{17}{subsection.J.3}%
+\contentsline {subsection}{\numberline {J.4}Programmatic Consequence}{18}{subsection.J.4}%
+\contentsline {section}{\numberline {K}Adjoint Structure of Choice and Probability}{18}{appendix.K}%
+\contentsline {section}{\numberline {L}Higher-Order Power as 2-Categorical Structure}{18}{appendix.L}%
+\contentsline {section}{\numberline {M}Derived RSVP Embedding}{18}{appendix.M}%
+\contentsline {section}{\numberline {N}Sheaf Cohomology and Structural Loss}{19}{appendix.N}%
+\contentsline {section}{\numberline {O}Entropy as Derived Functor}{19}{appendix.O}%
+\contentsline {section}{\numberline {P}The $\infty $-Categorical Refinement}{19}{appendix.P}%
+\contentsline {section}{\numberline {Q}Summary Correspondence Table}{20}{appendix.Q}%

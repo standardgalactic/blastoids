@@ -1,0 +1,118 @@
+\contentsline {section}{\numberline {1}The Collapse Problem: A Motivating Failure}{6}{section.1}%
+\contentsline {section}{\numberline {2}Constraint and Interface: The Abstraction Theorem}{7}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Preliminaries}{7}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}Lemma: Instability Under Unconstrained Generation}{7}{subsection.2.2}%
+\contentsline {subsection}{\numberline {2.3}The Abstraction Theorem}{8}{subsection.2.3}%
+\contentsline {subsection}{\numberline {2.4}Interpretation}{8}{subsection.2.4}%
+\contentsline {section}{\numberline {3}Encoding and Spectral Invariants: The Substrate Theorem}{8}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Preliminaries}{9}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}Supporting Lemmas}{9}{subsection.3.2}%
+\contentsline {subsection}{\numberline {3.3}The Substrate Theorem}{10}{subsection.3.3}%
+\contentsline {subsection}{\numberline {3.4}Interpretation}{10}{subsection.3.4}%
+\contentsline {section}{\numberline {4}Spectral Semantics and Generative Signatures}{10}{section.4}%
+\contentsline {subsection}{\numberline {4.1}From Symbol Sequences to Operators}{11}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}Generative Signatures as Process Invariants}{11}{subsection.4.2}%
+\contentsline {subsection}{\numberline {4.3}Relation to Compression and Kolmogorov Structure}{12}{subsection.4.3}%
+\contentsline {subsection}{\numberline {4.4}Spectral Collapse and Semantic Attractors}{12}{subsection.4.4}%
+\contentsline {subsection}{\numberline {4.5}Interpretation}{12}{subsection.4.5}%
+\contentsline {section}{\numberline {5}Policy, Constraint Load, and Expansion: The Policy Theorem}{13}{section.5}%
+\contentsline {subsection}{\numberline {5.1}Preliminaries}{13}{subsection.5.1}%
+\contentsline {subsection}{\numberline {5.2}Collapse Lemmas}{13}{subsection.5.2}%
+\contentsline {subsection}{\numberline {5.3}The Policy Theorem}{13}{subsection.5.3}%
+\contentsline {subsection}{\numberline {5.4}Embedding in RSVP Field Dynamics}{14}{subsection.5.4}%
+\contentsline {subsection}{\numberline {5.5}Interpretation}{14}{subsection.5.5}%
+\contentsline {section}{\numberline {6}Expansion Operators and the Algebra of Viable Extension}{14}{section.6}%
+\contentsline {subsection}{\numberline {6.1}Operators on History Space}{14}{subsection.6.1}%
+\contentsline {subsection}{\numberline {6.2}Non-Commutativity}{15}{subsection.6.2}%
+\contentsline {subsection}{\numberline {6.3}Constraint Interaction and Operator Bounds}{15}{subsection.6.3}%
+\contentsline {subsection}{\numberline {6.4}Operator Balance and Viability}{15}{subsection.6.4}%
+\contentsline {subsection}{\numberline {6.5}Operator Classification}{16}{subsection.6.5}%
+\contentsline {subsection}{\numberline {6.6}Interpretation}{16}{subsection.6.6}%
+\contentsline {section}{\numberline {7}The Narrative Type System as a Dependent Type Structure}{16}{section.7}%
+\contentsline {subsection}{\numberline {7.1}Types Indexed by History}{16}{subsection.7.1}%
+\contentsline {subsection}{\numberline {7.2}Identity as a Type-Level Invariant}{17}{subsection.7.2}%
+\contentsline {subsection}{\numberline {7.3}Type Expansion and Constraint Refinement}{17}{subsection.7.3}%
+\contentsline {subsection}{\numberline {7.4}The Type Coherence Theorem}{17}{subsection.7.4}%
+\contentsline {subsection}{\numberline {7.5}Interpretation}{18}{subsection.7.5}%
+\contentsline {section}{\numberline {8}Log Sovereignty and Append-Only Histories}{18}{section.8}%
+\contentsline {subsection}{\numberline {8.1}Append-Only Structure and Log Sovereignty}{18}{subsection.8.1}%
+\contentsline {subsection}{\numberline {8.2}Irreversibility of Violations}{18}{subsection.8.2}%
+\contentsline {subsection}{\numberline {8.3}Log-Preserving Encoding}{19}{subsection.8.3}%
+\contentsline {subsection}{\numberline {8.4}The Log Sovereignty Theorem}{19}{subsection.8.4}%
+\contentsline {subsection}{\numberline {8.5}Interpretation}{19}{subsection.8.5}%
+\contentsline {section}{\numberline {9}Temporal Asymmetry and the First-Person Constraint}{20}{section.9}%
+\contentsline {subsection}{\numberline {9.1}Two Modes of Access}{20}{subsection.9.1}%
+\contentsline {subsection}{\numberline {9.2}Constraint-Restricted Accessibility}{20}{subsection.9.2}%
+\contentsline {subsection}{\numberline {9.3}The Temporal Constraint Theorem}{21}{subsection.9.3}%
+\contentsline {subsection}{\numberline {9.4}Connection to Temporal Asymmetry in Philosophy of Mind}{21}{subsection.9.4}%
+\contentsline {section}{\numberline {10}The Compiled Self: Main Theorem}{21}{section.10}%
+\contentsline {subsection}{\numberline {10.1}The Narrative Type System}{22}{subsection.10.1}%
+\contentsline {subsection}{\numberline {10.2}No Component Is Redundant}{22}{subsection.10.2}%
+\contentsline {subsection}{\numberline {10.3}The Main Theorem}{22}{subsection.10.3}%
+\contentsline {subsection}{\numberline {10.4}RSVP Embedding}{23}{subsection.10.4}%
+\contentsline {subsection}{\numberline {10.5}Interpretation}{23}{subsection.10.5}%
+\contentsline {section}{\numberline {11}Prompting as Field Projection: Categorical and RSVP Formulation}{23}{section.11}%
+\contentsline {subsection}{\numberline {11.1}The Category of Internal Structures}{23}{subsection.11.1}%
+\contentsline {subsection}{\numberline {11.2}Rendering, Verification, and the Full Pipeline}{24}{subsection.11.2}%
+\contentsline {subsection}{\numberline {11.3}RSVP Embedding}{24}{subsection.11.3}%
+\contentsline {subsection}{\numberline {11.4}The Field Projection Theorem}{24}{subsection.11.4}%
+\contentsline {subsection}{\numberline {11.5}Interpretation}{25}{subsection.11.5}%
+\contentsline {section}{\numberline {12}Provenance Exposure and the Derivation Certificate}{25}{section.12}%
+\contentsline {subsection}{\numberline {12.1}The Provenance Problem}{25}{subsection.12.1}%
+\contentsline {subsection}{\numberline {12.2}The Derivation Certificate}{26}{subsection.12.2}%
+\contentsline {subsection}{\numberline {12.3}The Provenance Theorem}{26}{subsection.12.3}%
+\contentsline {subsection}{\numberline {12.4}Interpretation}{26}{subsection.12.4}%
+\contentsline {section}{\numberline {13}The Self as a Provenance-Stable Interface}{26}{section.13}%
+\contentsline {subsection}{\numberline {13.1}Interface as a Fixed Point}{27}{subsection.13.1}%
+\contentsline {subsection}{\numberline {13.2}Closure Under the Theorem Chain}{27}{subsection.13.2}%
+\contentsline {subsection}{\numberline {13.3}Failure Modes}{28}{subsection.13.3}%
+\contentsline {subsection}{\numberline {13.4}Interpretation}{28}{subsection.13.4}%
+\contentsline {section}{\numberline {14}Comparison with Existing Theories}{28}{section.14}%
+\contentsline {subsection}{\numberline {14.1}Functionalism as Projection onto Transition Structure}{28}{subsection.14.1}%
+\contentsline {subsection}{\numberline {14.2}Integrated Information Theory as Projection onto Accessibility Structure}{29}{subsection.14.2}%
+\contentsline {subsection}{\numberline {14.3}Free Energy Principle as Projection onto Policy Dynamics}{29}{subsection.14.3}%
+\contentsline {subsection}{\numberline {14.4}Temporal Accounts as Accessibility Constraint}{29}{subsection.14.4}%
+\contentsline {subsection}{\numberline {14.5}Synthesis}{30}{subsection.14.5}%
+\contentsline {section}{\numberline {15}On the Classification of Expansion Operators}{30}{section.15}%
+\contentsline {subsection}{\numberline {15.1}Taxonomy of Expansion Operators}{30}{subsection.15.1}%
+\contentsline {subsection}{\numberline {15.2}Cross-Domain Composition}{31}{subsection.15.2}%
+\contentsline {subsection}{\numberline {15.3}Spectral Characterization of Expansion}{31}{subsection.15.3}%
+\contentsline {subsection}{\numberline {15.4}Expansion Viability Theorem}{32}{subsection.15.4}%
+\contentsline {subsection}{\numberline {15.5}Interpretation}{32}{subsection.15.5}%
+\contentsline {section}{\numberline {16}Correspondence and Instantiation Across Real Systems}{32}{section.16}%
+\contentsline {subsection}{\numberline {16.1}Instantiation in Programming Languages and Compilers}{32}{subsection.16.1}%
+\contentsline {subsection}{\numberline {16.2}Instantiation in Distributed Systems}{33}{subsection.16.2}%
+\contentsline {subsection}{\numberline {16.3}Instantiation in Machine Learning and Language Models}{34}{subsection.16.3}%
+\contentsline {subsection}{\numberline {16.4}Instantiation in Biological Systems}{35}{subsection.16.4}%
+\contentsline {subsection}{\numberline {16.5}Unified Interpretation}{35}{subsection.16.5}%
+\contentsline {section}{\numberline {17}Nontrivial Consequences and Falsifiability}{36}{section.17}%
+\contentsline {subsection}{\numberline {17.1}The Collapse Constraint}{36}{subsection.17.1}%
+\contentsline {subsection}{\numberline {17.2}The Expansion-Restriction Instability}{37}{subsection.17.2}%
+\contentsline {subsection}{\numberline {17.3}Constraint Necessity}{37}{subsection.17.3}%
+\contentsline {section}{\numberline {18}Operational Semantics and Concrete Instantiation}{37}{section.18}%
+\contentsline {subsection}{\numberline {18.1}Spectral Signatures as Computable Objects}{37}{subsection.18.1}%
+\contentsline {subsection}{\numberline {18.2}Constraint Evaluation as Programmatic Verification}{38}{subsection.18.2}%
+\contentsline {subsection}{\numberline {18.3}Instantiation in Existing Architectures}{38}{subsection.18.3}%
+\contentsline {section}{\numberline {19}Position Relative to Autopoiesis and Embodied Systems}{39}{section.19}%
+\contentsline {subsection}{\numberline {19.1}Production and Projection}{39}{subsection.19.1}%
+\contentsline {subsection}{\numberline {19.2}Interpretation of the Self and Limits of the Framework}{39}{subsection.19.2}%
+\contentsline {section}{\numberline {20}Derived Construction: The Constraint-Coupled Generative Loop}{40}{section.20}%
+\contentsline {subsection}{\numberline {20.1}Definition of the Coupled Loop}{40}{subsection.20.1}%
+\contentsline {subsection}{\numberline {20.2}Non-Decomposability}{41}{subsection.20.2}%
+\contentsline {subsection}{\numberline {20.3}Derived Prediction}{41}{subsection.20.3}%
+\contentsline {section}{\numberline {21}Irreversible History as a Binding Constraint}{41}{section.21}%
+\contentsline {section}{\numberline {22}On the Non-Equivalence of Binding and Non-Binding Dynamical Systems}{43}{section.22}%
+\contentsline {subsection}{\numberline {22.1}Definitions}{43}{subsection.22.1}%
+\contentsline {subsection}{\numberline {22.2}Non-Simulability Theorem}{43}{subsection.22.2}%
+\contentsline {section}{\numberline {23}Structural Non-Equivalence via Extension-Monotone Consistency}{43}{section.23}%
+\contentsline {subsection}{\numberline {23.1}Global vs Local Constraint Enforcement}{44}{subsection.23.1}%
+\contentsline {section}{\numberline {24}The Finite-Type Boundary and the Scope of Local Constraint Enforcement}{44}{section.24}%
+\contentsline {subsection}{\numberline {24.1}Formal Setup}{45}{subsection.24.1}%
+\contentsline {subsection}{\numberline {24.2}Summary Reduction Criterion}{45}{subsection.24.2}%
+\contentsline {section}{\numberline {25}Examples of Non-Finite-Type Admissibility Structures}{46}{section.25}%
+\contentsline {section}{\numberline {26}Approximation by Finite Systems and the Collapse of Structural Distinctions}{47}{section.26}%
+\contentsline {subsection}{\numberline {26.1}Approximate Admissibility and Uniform Approximation}{47}{subsection.26.1}%
+\contentsline {subsection}{\numberline {26.2}Horizon Fidelity and Graceful Degradation}{47}{subsection.26.2}%
+\contentsline {section}{\numberline {27}A Concrete Construction: Spectral Constraint-Coupled Generation}{48}{section.27}%
+\contentsline {subsection}{\numberline {27.1}Construction}{48}{subsection.27.1}%
+\contentsline {subsection}{\numberline {27.2}Generative Dynamics and Irreducibility}{49}{subsection.27.2}%

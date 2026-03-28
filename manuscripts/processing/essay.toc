@@ -1,0 +1,41 @@
+\contentsline {section}{\numberline {1}The Collapse Problem: A Motivating Failure}{2}{section.1}%
+\contentsline {section}{\numberline {2}Constraint and Interface: The Abstraction Theorem}{3}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Preliminaries}{3}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}Lemma: Instability Under Unconstrained Generation}{4}{subsection.2.2}%
+\contentsline {subsection}{\numberline {2.3}The Abstraction Theorem}{4}{subsection.2.3}%
+\contentsline {subsection}{\numberline {2.4}Interpretation}{5}{subsection.2.4}%
+\contentsline {section}{\numberline {3}Encoding and Spectral Invariants: The Substrate Theorem}{5}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Preliminaries}{6}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}Lemma: Universality Without Decoding Is Insufficient}{7}{subsection.3.2}%
+\contentsline {subsection}{\numberline {3.3}Lemma: Spectral Collapse Detects Generative Collapse}{7}{subsection.3.3}%
+\contentsline {subsection}{\numberline {3.4}The Substrate Theorem}{7}{subsection.3.4}%
+\contentsline {subsection}{\numberline {3.5}Interpretation}{8}{subsection.3.5}%
+\contentsline {section}{\numberline {4}Policy, Constraint Load, and Expansion: The Policy Theorem}{9}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Preliminaries}{9}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}Lemma: Pure Restriction Collapses Possibility}{10}{subsection.4.2}%
+\contentsline {subsection}{\numberline {4.3}Lemma: Pure Expansion Violates Coherence}{10}{subsection.4.3}%
+\contentsline {subsection}{\numberline {4.4}The Policy Theorem}{10}{subsection.4.4}%
+\contentsline {subsection}{\numberline {4.5}Embedding in RSVP Field Dynamics}{11}{subsection.4.5}%
+\contentsline {subsection}{\numberline {4.6}Interpretation}{11}{subsection.4.6}%
+\contentsline {section}{\numberline {5}The Compiled Self: Main Theorem}{12}{section.5}%
+\contentsline {subsection}{\numberline {5.1}The Narrative Type System}{12}{subsection.5.1}%
+\contentsline {subsection}{\numberline {5.2}Lemma: No Component Is Redundant}{13}{subsection.5.2}%
+\contentsline {subsection}{\numberline {5.3}The Main Theorem}{13}{subsection.5.3}%
+\contentsline {subsection}{\numberline {5.4}Embedding in RSVP Field Dynamics}{14}{subsection.5.4}%
+\contentsline {subsection}{\numberline {5.5}Interpretation}{15}{subsection.5.5}%
+\contentsline {section}{\numberline {6}Prompting as Field Projection: Categorical and RSVP Formulation}{15}{section.6}%
+\contentsline {subsection}{\numberline {6.1}The Category of Internal Structures}{15}{subsection.6.1}%
+\contentsline {subsection}{\numberline {6.2}Prompting as a Functor}{16}{subsection.6.2}%
+\contentsline {subsection}{\numberline {6.3}Rendering as Probabilistic Completion}{16}{subsection.6.3}%
+\contentsline {subsection}{\numberline {6.4}Verification as Reinterpretation}{17}{subsection.6.4}%
+\contentsline {subsection}{\numberline {6.5}RSVP Embedding}{17}{subsection.6.5}%
+\contentsline {subsection}{\numberline {6.6}The Field Projection Theorem}{18}{subsection.6.6}%
+\contentsline {subsection}{\numberline {6.7}Interpretation}{18}{subsection.6.7}%
+\contentsline {section}{\numberline {7}Provenance Exposure: Making the Derivation History Legible}{19}{section.7}%
+\contentsline {subsection}{\numberline {7.1}The Provenance Gap}{19}{subsection.7.1}%
+\contentsline {subsection}{\numberline {7.2}The Derivation Certificate}{19}{subsection.7.2}%
+\contentsline {subsection}{\numberline {7.3}Structural Authorship}{20}{subsection.7.3}%
+\contentsline {subsection}{\numberline {7.4}Field Provenance Signature}{21}{subsection.7.4}%
+\contentsline {subsection}{\numberline {7.5}The Provenance Completeness Theorem}{21}{subsection.7.5}%
+\contentsline {subsection}{\numberline {7.6}Interpretation}{21}{subsection.7.6}%
+\contentsline {section}{\numberline {8}Open Problems: Operator Classification and Field Interaction}{22}{section.8}%

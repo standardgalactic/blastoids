@@ -1,0 +1,1217 @@
+\documentclass[12pt, a4paper]{article}
+
+\usepackage{amsmath, amsthm, amssymb}
+\usepackage{geometry}
+\usepackage{microtype}
+\usepackage{hyperref}
+\usepackage{setspace}
+\usepackage{titlesec}
+
+\geometry{margin=1.25in}
+\onehalfspacing
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\titleformat{\section}{\large\bfseries}{\thesection.}{1em}{}
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection.}{1em}{}
+\titleformat{\subsubsection}{\normalsize\itshape}{\thesubsubsection.}{1em}{}
+
+\hypersetup{colorlinks=true,linkcolor=black,urlcolor=black,citecolor=black}
+
+\title{\textbf{Constraint, Abstraction, and the Compiled Self}\\[0.5em]
+\large A Formal Theory of Interface, Substrate, Policy, and Identity}
+\author{Flyxion}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+This paper develops a formal theorem chain establishing the structural conditions under which a stable self can exist as a compiled abstraction over irreversible history. Beginning with a motivating failure---a Markov name generator whose lexically plausible outputs collapse to generic semantic attractors---we derive four core theorems in strict logical sequence. The Abstraction Theorem establishes that a stable interface exists if and only if a constraint functional enforces global coherence across history. The Substrate Theorem establishes that a symbolic medium is coherent if and only if it preserves spectrally detectable generative distinctions through a paired encoding-decoding structure. The Policy Theorem establishes that viable dynamics require simultaneous constraint preservation and non-collapse of admissible future volume, necessitating a mixture of restrictive and expansive operators. The Main Theorem assembles these into a biconditional: a compiled self exists if and only if all three prior conditions are satisfied jointly and a narrative type system enforces admissibility locally at each transition. The paper then develops supporting structures---spectral semantics, an algebra of expansion operators, dependent narrative types, log sovereignty, temporal asymmetry, prompting as field projection, and provenance exposure---culminating in the identification of the self as a provenance-stable interface. Existing theories of mind are shown to be partial projections of this invariant. The paper concludes with a classification framework for expansion operators as the forward boundary of the theory.
+\end{abstract}
+
+\tableofcontents
+\newpage
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{The Collapse Problem: A Motivating Failure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+We begin not with a theorem but with an experiment. Some years ago, one of us constructed a Markov name generator over a character-level transition matrix derived from English phonotactics. The system was elegant in its simplicity: a twenty-six letter alphabet augmented with a termination state, transition probabilities learned from a corpus, and a sampler that produced outputs with the phonological feel of proper names without being drawn from any known lexicon. The outputs were genuinely novel. Names emerged that belonged to no existing language, yet all felt pronounceable and plausible as designators of persons, places, or systems.
+
+The experiment's next phase was to feed these names into a language model and request that the model generate descriptions: mythologies, philosophies, cosmologies, the ethical frameworks that such names might plausibly anchor. The results were immediately striking and immediately disappointing. Every name, regardless of its phonological character, attracted descriptions from a small set of semantic attractors. Ancient wisdom traditions appeared repeatedly. Cyclical cosmologies, ethical systems centered on balance or harmony, pantheons organized around natural forces---these dominated across all generated names. The generator had produced genuine lexical novelty. The model had reduced that novelty to a handful of familiar archetypes.
+
+The temptation is to attribute this to limitations of the model, or to insufficient prompting, or to insufficient novelty in the names themselves. We argue instead that the failure was structural and inevitable, and that understanding why it was inevitable is the entry point into everything that follows.
+
+Formally, the Markov generator defines a stochastic process over a character alphabet $\Sigma = \{a, b, \dots, z\} \cup \{\mathrm{END}\}$. Each generated word is a trajectory
+\[
+w = (\ell_1, \ell_2, \dots, \ell_n), \quad \ell_{t+1} \sim P(\cdot \mid \ell_t),
+\]
+where $P$ is the learned transition kernel and termination occurs when the END state is sampled or a maximum length is reached. The generator defines a measure over $\Sigma^*$, the space of finite strings over $\Sigma$.
+
+What the generator does not define is any mapping from $\Sigma^*$ into a space of structured objects with internal invariants. It produces labels without objects. When the model receives such a label, it has no paired decoder, no constraint structure, no field of internal relations to recover. It therefore does what it always does in the absence of structural grounding: it samples from its prior over semantically similar-looking tokens, and that prior is overwhelmingly concentrated on a small number of frequently co-occurring conceptual clusters.
+
+The failure is not that the generator lacked creativity. It lacked coupling. And coupling---the formal relationship between a symbolic surface and the structured object it is meant to carry---is precisely what the following sections develop.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Constraint and Interface: The Abstraction Theorem}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Preliminaries}
+
+Let $\Omega$ denote the space of possible events $\omega$, and let a history be a finite ordered sequence:
+\[
+H_t = (\omega_1, \omega_2, \dots, \omega_t) \in \Omega^*.
+\]
+Let $\mathcal{C} : \Omega^* \to \{0,1\}$ be a \emph{constraint functional} such that $\mathcal{C}(H_t) = 1$ indicates that $H_t$ is globally coherent. Coherence is a structural predicate, not a semantic one: it concerns whether the history is internally consistent under the operative formal system.
+
+Let $\mathcal{S}$ denote a space of interface states. An \emph{interface} is a mapping $\mathcal{I} : \Omega^* \to \mathcal{S}$, required to be stable under extension.
+
+\begin{definition}[Constraint Preservation]
+A history evolution preserves constraints if for all $t$:
+\[
+\mathcal{C}(H_t) = 1 \;\Rightarrow\; \mathcal{C}(H_{t+1}) = 1.
+\]
+\end{definition}
+
+\begin{definition}[Interface Stability]
+An interface $\mathcal{I}$ is stable if there exists a projection operator $\pi$ such that for all $t$:
+\[
+\pi(\mathcal{I}(H_{t+1})) = \mathcal{I}(H_t).
+\]
+\end{definition}
+
+\subsection{Lemma: Instability Under Unconstrained Generation}
+
+\begin{lemma}
+If no constraint functional $\mathcal{C}$ exists such that $\mathcal{C}(H_t) = 1$ for all admissible histories, then no stable interface $\mathcal{I}$ exists.
+\end{lemma}
+
+\begin{proof}
+Suppose no such $\mathcal{C}$ exists. Then there exist histories $H_t$ and extensions $\omega_{t+1}$ such that $H_{t+1}$ may introduce arbitrary contradictions. Assume for contradiction that a stable interface $\mathcal{I}$ exists. Then there must exist $\pi$ with $\pi(\mathcal{I}(H_{t+1})) = \mathcal{I}(H_t)$. However, since $H_{t+1}$ may arbitrarily violate prior structure, $\mathcal{I}(H_{t+1})$ cannot simultaneously encode both the previous representation and the contradictory extension without inconsistency. No such $\pi$ can exist, a contradiction.
+\end{proof}
+
+\subsection{The Abstraction Theorem}
+
+\begin{theorem}[Abstraction Theorem]
+\label{thm:abstraction}
+A stable interface $\mathcal{I} : \Omega^* \to \mathcal{S}$ exists if and only if there exists a constraint functional $\mathcal{C}$ such that all admissible histories satisfy $\mathcal{C}(H_t) = 1$ for all $t$.
+\end{theorem}
+
+\begin{proof}
+(\textit{Necessity.}) Assume a stable interface exists. For any extension $H_t \to H_{t+1}$, the representation must remain consistent under projection. This requires that $H_{t+1}$ cannot introduce arbitrary incompatibilities with $H_t$, since such incompatibilities would prevent any consistent projection. Therefore a constraint functional $\mathcal{C}$ restricting admissible histories must exist.
+
+(\textit{Sufficiency.}) Assume $\mathcal{C}$ exists with $\mathcal{C}(H_t) = 1$ for all admissible $H_t$. Define $H_t \sim H_t'$ iff they are indistinguishable under $\mathcal{C}$, let $\mathcal{S} = \Omega^*/{\sim}$, and set $\mathcal{I}(H_t) = [H_t]$. Constraint preservation ensures any admissible extension $H_{t+1}$ remains in the same equivalence class under projection. Hence $\pi$ exists and $\mathcal{I}$ is stable.
+\end{proof}
+
+\subsection{Interpretation}
+
+The Abstraction Theorem establishes that abstraction is a structural necessity. A system admits a stable interface if and only if its evolution is constrained so that history remains globally coherent. The interface is the quotient of history space under constraint-induced equivalence: it presents what is preserved and hides what is not. The Markov generator, lacking any $\mathcal{C}$, cannot produce a stable interface regardless of how rich its outputs are.
+
+Every layer of abstraction in computational systems---binary to logic gates, types to paradigms, paradigms to interfaces---is an instance of this theorem. Each layer is stable precisely because a constraint system operates below it, enforcing invariants that prevent lower-level incoherence from appearing above.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Encoding and Spectral Invariants: The Substrate Theorem}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Theorem~\ref{thm:abstraction} established that a stable interface requires a constraint functional. We now ask when a symbolic substrate can carry a constrained history without destroying the structural distinctions that make abstraction possible.
+
+\subsection{Preliminaries}
+
+An \emph{encoding} is $\mathcal{E} : \Omega^* \to \Sigma^*$, and a \emph{decoder} is $\mathcal{D} : \Sigma^* \to \Omega^* \cup \{\bot\}$, where $\bot$ denotes failure.
+
+\begin{definition}[Signal Realization and Spectral Signature]
+A signal realization of $w \in \Sigma^*$ is a map $\rho : \Sigma^* \to \mathbb{R}^n$. The spectral signature of $w$ is $\mathcal{F}(w) = \hat{x}$, the discrete Fourier transform of $\rho(w)$.
+\end{definition}
+
+The spectral signature is an invariant of generative structure: the recurrent, periodic, and transition-level regularities in the encoded history that reflect the internal organization of the process that produced it.
+
+\begin{definition}[Generative Equivalence]
+Two histories $H, H' \in \Omega^*$ are generatively equivalent, $H \equiv_{\mathcal{G}} H'$, if they induce the same constrained transition structure under $\mathcal{G}$.
+\end{definition}
+
+\begin{definition}[Spectral Preservation]
+An encoding $\mathcal{E}$ is spectrally preserving if $H \equiv_{\mathcal{G}} H'$ implies $\mathcal{F}(\mathcal{E}(H)) = \mathcal{F}(\mathcal{E}(H'))$, and spectral separation of inequivalent histories is maintained on the constrained domain.
+\end{definition}
+
+\subsection{Supporting Lemmas}
+
+\begin{lemma}
+\label{lem:universality}
+If $\mathcal{E}$ is universal but no $\mathcal{D}$ preserving $\mathcal{C}$ exists, then $\Sigma^*$ cannot function as a coherent substrate.
+\end{lemma}
+
+\begin{proof}
+Universality guarantees representability, not coherent reconstruction. If no $\mathcal{D}$ preserving $\mathcal{C}$ exists, then for some $w = \mathcal{E}(H)$, either $\mathcal{D}(w) = \bot$ or $\mathcal{C}(\mathcal{D}(w)) = 0$. The substrate therefore carries syntax without preserving the structure required for interface stability.
+\end{proof}
+
+\begin{lemma}
+\label{lem:spectral}
+If $H \not\equiv_{\mathcal{G}} H'$ but $\mathcal{F}(\mathcal{E}(H)) = \mathcal{F}(\mathcal{E}(H'))$, then the encoding fails to preserve generative distinction.
+\end{lemma}
+
+\begin{proof}
+The encoding identifies histories that are distinct at the level relevant to continuation and policy, admitting a many-to-one collapse of generative structure. Encoded histories cannot then support coherent decoding of policy-relevant distinctions.
+\end{proof}
+
+\subsection{The Substrate Theorem}
+
+\begin{theorem}[Substrate Theorem]
+\label{thm:substrate}
+A symbolic substrate $\Sigma^*$ functions as a coherent substrate for constrained histories if and only if there exist $\mathcal{E}$ and $\mathcal{D}$ such that: $\mathcal{D}(\mathcal{E}(H)) = H$ up to generative equivalence on the constrained domain; $\mathcal{C}(H) = 1$ implies $\mathcal{C}(\mathcal{D}(\mathcal{E}(H))) = 1$; and $\mathcal{E}$ preserves spectral invariants sufficient to distinguish generatively inequivalent admissible histories.
+\end{theorem}
+
+\begin{proof}
+(\textit{Necessity.}) Coherent substrate use requires that admissible histories remain reconstructible and admissible after encoding and decoding, establishing the first two conditions. If the third failed, then by Lemma~\ref{lem:spectral} distinct admissible histories would become indistinguishable in the substrate, making different continuation structures unresolvable.
+
+(\textit{Sufficiency.}) The three conditions jointly ensure that histories are reconstructible up to generative equivalence, admissibility is preserved across the encoding-decoding boundary, and histories differing in constrained generative behavior remain distinguishable. Therefore the substrate supports stable abstraction.
+\end{proof}
+
+\begin{corollary}[The Markov Failure]
+A Markov name generator does not define a coherent substrate for semantic or policy-relevant histories.
+\end{corollary}
+
+\begin{proof}
+It supplies no paired $\mathcal{D}$ preserving constrained generative structure. Conditions one and two of Theorem~\ref{thm:substrate} fail; the third holds only at a superficial lexical level.
+\end{proof}
+
+\subsection{Interpretation}
+
+Universality of representation is insufficient. A substrate is coherent only when it preserves the distinctions relevant for constrained continuation. The Library of Babel contains every possible string, but access to it does not constitute a coherent substrate because no decoder makes recognition possible. Text is valid as a substrate only insofar as it is paired with a decoder and a preserved invariant structure.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Spectral Semantics and Generative Signatures}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+The Substrate Theorem introduced the spectral signature as a detection invariant. In this section we develop spectral structure into a full semantic layer, showing that it provides a bridge between symbolic representation and generative process that is independent of interpretation.
+
+\subsection{From Symbol Sequences to Operators}
+
+Let $w \in \Sigma^*$ be an encoded history with signal realization $\rho(w) \in \mathbb{R}^n$. The discrete Fourier transform decomposes the sequence as
+\[
+\rho(w)(t) = \sum_{k} \hat{x}_k e^{2\pi i k t / n},
+\]
+making explicit that the encoded history is not simply a list of symbols but the trace of a generative process with characteristic frequencies, correlations, and recurrence structures. These are invariant under many transformations that alter surface form while preserving generative organization.
+
+\begin{definition}[Spectral Equivalence]
+Two encoded histories $w, w' \in \Sigma^*$ are spectrally equivalent, $w \sim_{\mathcal{F}} w'$, if $\mathcal{F}(w) = \mathcal{F}(w')$ up to a prescribed tolerance.
+\end{definition}
+
+Spectral equivalence defines a quotient on $\Sigma^*$ strictly coarser than syntactic equivalence but finer than arbitrary semantic grouping. It partitions encoded histories according to their generative signatures rather than their lexical identity.
+
+\begin{proposition}
+Spectral equivalence respects generative equivalence on the constrained domain if and only if $\mathcal{E}$ is spectrally preserving.
+\end{proposition}
+
+\begin{proof}
+If $\mathcal{E}$ is spectrally preserving, generatively equivalent histories map to spectrally equivalent encodings by definition. Conversely, if spectral equivalence respects generative equivalence, the encoding must preserve the invariants determining spectral structure, since otherwise generatively distinct histories would collapse into the same spectral class.
+\end{proof}
+
+\subsection{Generative Signatures as Process Invariants}
+
+\begin{definition}[Generative Signature]
+The generative signature of a process $\mathcal{G}$ is the distribution of spectral signatures
+\[
+\mathcal{S}_{\mathcal{G}} = \{ \mathcal{F}(\mathcal{E}(H)) \mid H \in \Omega^*,\; H \text{ generated by } \mathcal{G} \}.
+\]
+\end{definition}
+
+Two processes are generatively indistinguishable on the constrained domain if they induce the same $\mathcal{S}_{\mathcal{G}}$. This allows process identity to be established independent of surface form.
+
+\subsection{Relation to Compression and Kolmogorov Structure}
+
+The spectral signature provides a computable approximation to deeper notions of structure such as Kolmogorov complexity. While Kolmogorov complexity measures the length of the shortest program generating a string, spectral structure measures the distribution of regularities within it. These are related: highly compressible sequences exhibit concentrated spectral energy while random sequences exhibit approximately uniform spectral distributions.
+
+This connection clarifies the role of spectral analysis in the framework. It is not a substitute for semantic interpretation but a diagnostic of whether a sequence carries structured regularity consistent with a constrained generative process.
+
+\subsection{Spectral Collapse and Semantic Attractors}
+
+\begin{proposition}
+Prior-dominated rendering induces spectral concentration toward attractor signatures.
+\end{proposition}
+
+\begin{proof}[Sketch]
+In the absence of constraint-dominated projection, the rendering operator samples from high-density regions of the learned manifold. These correspond to recurrent patterns in training data, which exhibit concentrated spectral signatures. The output therefore inherits the spectral characteristics of these attractors rather than those of the input trace.
+\end{proof}
+
+The Markov generator produces strings whose local transition statistics resemble natural language, but whose global generative signatures are shallow. When projected into semantic space without a paired decoder, the rendering operator maps them into attractor regions. Spectrally, this corresponds to a collapse from a broad distribution of low-amplitude features into a concentrated distribution associated with familiar semantic clusters.
+
+\subsection{Interpretation}
+
+Spectral semantics provides a middle layer between syntax and meaning. It captures structure without requiring interpretation and detects collapse without requiring external validation. It is the invariant that allows the Substrate Theorem to distinguish between representations preserving generative structure and those that do not, enabling us to say in a formally testable way that two encoded histories differ in the organization of their generative processes even when they appear superficially similar.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Policy, Constraint Load, and Expansion: The Policy Theorem}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+With a stable interface and coherent substrate established, we now formalize dynamics. Given a constrained history, what constitutes a viable transition?
+
+\subsection{Preliminaries}
+
+Define the admissible future space:
+\[
+\Omega(H_t) = \{ \omega \in \Omega \mid \mathcal{C}(H_t \oplus \omega) = 1 \}.
+\]
+A \emph{policy} is $\pi : \Omega^* \to \Omega$ with $\pi(H_t) \in \Omega(H_t)$.
+
+\begin{definition}[Constraint Load]
+$\kappa : \Omega^* \to \mathbb{R}_{\geq 0}$ is a monotone functional measuring accumulated constraint tension: $H_t \subset H_{t+1}$ implies $\kappa(H_t) \leq \kappa(H_{t+1})$.
+\end{definition}
+
+\begin{definition}[Future Volume]
+$V(H_t) = |\Omega(H_t)|$, or a suitable measure in continuous settings.
+\end{definition}
+
+\begin{definition}[Expansive and Restrictive Actions]
+An action $\omega$ is expansive at $H_t$ if $V(H_t \oplus \omega) \geq V(H_t)$, and restrictive if $V(H_t \oplus \omega) < V(H_t)$.
+\end{definition}
+
+\subsection{Collapse Lemmas}
+
+\begin{lemma}
+If a policy selects only restrictive actions, then there exists $T$ such that $V(H_T) = 0$.
+\end{lemma}
+
+\begin{proof}
+Each step strictly reduces $V$, which is bounded below by $0$. The strictly decreasing sequence must reach $0$ in finite or limit time.
+\end{proof}
+
+\begin{lemma}
+If a policy selects only expansive actions without regard to constraint load, then there exists $T$ such that $\mathcal{C}(H_T) = 0$.
+\end{lemma}
+
+\begin{proof}
+Since $\kappa$ is monotone, unbounded expansion without corrective restriction leads to accumulated constraint violations at some $T$.
+\end{proof}
+
+\subsection{The Policy Theorem}
+
+\begin{theorem}[Policy Theorem]
+\label{thm:policy}
+A policy $\pi$ is viable over unbounded time if and only if it satisfies both constraint preservation ($\mathcal{C}(H_t) = 1$ implies $\mathcal{C}(H_{t+1}) = 1$) and non-collapse of possibility ($\inf_t V(H_t) > 0$).
+\end{theorem}
+
+\begin{proof}
+(\textit{Necessity.}) Failure of either condition terminates the process or destroys coherence.
+
+(\textit{Sufficiency.}) Constraint preservation ensures admissibility at all times; non-collapse ensures at least one admissible continuation always exists. The policy can therefore be extended indefinitely.
+\end{proof}
+
+\begin{corollary}
+Any viable policy must contain both restrictive and expansive actions.
+\end{corollary}
+
+\subsection{Embedding in RSVP Field Dynamics}
+
+Let $(\Phi, \mathbf{v}, S)$ be the RSVP field variables, where $\Phi$ encodes density of realized structure, $\mathbf{v}$ encodes flow of transitions, and $S$ encodes entropy. Then $\kappa(H_t) \sim \int S(x,t)\,dx$ and $V(H_t)$ is measured by admissible configurations under $\Phi$. Restrictive actions correspond to local increases in $\Phi$; expansive actions correspond to redistribution via $\mathbf{v}$ enlarging admissible configuration space. The Policy Theorem becomes the dynamical statement that viability requires the entropy integral to remain bounded and admissible configuration volume to remain positive.
+
+\subsection{Interpretation}
+
+Viable dynamics are not characterized by any single optimization criterion but by the simultaneous satisfaction of two structural constraints. Policy is a geometric object: a path on a constrained manifold avoiding both boundary collision (incoherence) and volume collapse (rigidity). Intelligence is not the production of options but the maintenance of a viable trajectory through possibility space.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Expansion Operators and the Algebra of Viable Extension}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+The Policy Theorem established that viable trajectories require both restrictive and expansive actions. We now formalize expansion operators as algebraic objects and analyze their structure.
+
+\subsection{Operators on History Space}
+
+Let $\mathcal{O} = \{ \mathcal{U} : \Omega^* \to \Omega^* \}$ denote a class of operators on histories.
+
+\begin{definition}[Admissible Operator]
+An operator $\mathcal{U}$ is admissible if $\mathcal{C}(H_t) = 1$ implies $\mathcal{C}(\mathcal{U}(H_t)) = 1$ for all $H_t$.
+\end{definition}
+
+\begin{definition}[Expansive and Restrictive Operators]
+An admissible operator is expansive if $V(\mathcal{U}(H_t)) \geq V(H_t)$ with strict inequality on a positive-measure subset. It is restrictive if $V(\mathcal{U}(H_t)) \leq V(H_t)$ with strict inequality on a positive-measure subset.
+\end{definition}
+
+\subsection{Non-Commutativity}
+
+\begin{proposition}
+The algebra of admissible operators is generally non-commutative.
+\end{proposition}
+
+\begin{proof}
+$\mathcal{U}_1$ alters both $\kappa(H_t)$ and $\Omega(H_t)$. Applying $\mathcal{U}_2$ after $\mathcal{U}_1$ therefore acts on a different domain than applying $\mathcal{U}_2$ first. In general $\mathcal{U}_2(\mathcal{U}_1(H_t)) \neq \mathcal{U}_1(\mathcal{U}_2(H_t))$.
+\end{proof}
+
+Non-commutativity is fundamental: the order in which expansions and restrictions are applied matters, and viable dynamics depend on sequencing.
+
+\subsection{Constraint Interaction and Operator Bounds}
+
+\begin{definition}[Operator Constraint Increment]
+$\Delta_\kappa(\mathcal{U}, H_t) = \kappa(\mathcal{U}(H_t)) - \kappa(H_t)$.
+\end{definition}
+
+\begin{proposition}
+There exists no operator class simultaneously guaranteeing $\Delta_\kappa \leq 0$ and $V$-expansion over all admissible histories.
+\end{proposition}
+
+\begin{proof}
+Increasing $V$ without increasing $\kappa$ would introduce new admissible continuations without modifying the constraint structure, contradicting the definition of admissibility. Therefore no such operator exists.
+\end{proof}
+
+Expansion is not free. Any increase in admissible future space must be paid for either by increased constraint complexity or by restructuring the constraint system itself.
+
+\subsection{Operator Balance and Viability}
+
+\begin{theorem}[Operator Balance]
+A sequence $(\mathcal{U}_t)$ of admissible operators defines a viable trajectory if and only if
+\[
+\sup_t \kappa(\mathcal{U}_t \circ \cdots \circ \mathcal{U}_1(H_0)) < \infty
+\quad \text{and} \quad
+\inf_t V(\mathcal{U}_t \circ \cdots \circ \mathcal{U}_1(H_0)) > 0.
+\]
+\end{theorem}
+
+\begin{proof}
+Follows directly from Theorem~\ref{thm:policy} by expressing history evolution as operator composition.
+\end{proof}
+
+\subsection{Operator Classification}
+
+Although a complete classification is beyond the present work, broad types may be characterized by structural effect. A symbolic operator introduces new representational capacity by embedding $\Omega^*$ into a richer structure. A computational operator introduces new transformations whose admissibility derives from closure under composition. A semantic operator restructures the constraint system, replacing $\mathcal{C}$ with an equivalent functional that admits a different but compatible set of continuations. A physical operator corresponds to changes in the material substrate that alter what operations are tractable rather than merely what operations are defined. Real systems operate under compositions of these types, and coherent evolution requires that composed operators preserve constraint compatibility across all domains.
+
+\subsection{Interpretation}
+
+To build a system remaining viable over long horizons is to design an operator algebra with the right balance properties: operators that open new regions of possibility, operators that consolidate and stabilize structure, and rules governing composition that prevent both collapse and incoherence.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{The Narrative Type System as a Dependent Type Structure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+The Main Theorem will require a narrative type system $\mathcal{T}$ as a filter on admissible continuations. In this section we develop its structure, showing that it is naturally modeled as a dependent type system over histories and that identity is not stored but enforced as a type-level invariant.
+
+\subsection{Types Indexed by History}
+
+\begin{definition}[Dependent Narrative Type]
+A dependent narrative type is a function assigning to each history $H_t$ a type $\mathsf{Type}(H_t)$ such that $\omega \in \mathsf{Type}(H_t)$ implies $\mathcal{C}(H_t \oplus \omega) = 1$.
+\end{definition}
+
+\begin{proposition}
+The narrative type system is path-dependent.
+\end{proposition}
+
+\begin{proof}
+$\mathsf{Type}(H_t)$ depends on the full history $H_t$, not merely on a current state or summary statistic. Two histories equivalent under some coarse abstraction but differing in constraint-relevant structure may induce different admissible continuation types.
+\end{proof}
+
+Path dependence is essential. It encodes the irreversibility of history and ensures that identity is not reducible to a state variable independent of its derivation.
+
+\subsection{Identity as a Type-Level Invariant}
+
+\begin{definition}[Identity Invariant]
+An identity invariant is a predicate $\mathcal{I}_d$ over histories such that for all admissible extensions:
+\[
+\mathcal{I}_d(H_t) = 1 \;\Rightarrow\; \mathcal{I}_d(H_t \oplus \omega) = 1 \quad \text{for all } \omega \in \mathsf{Type}(H_t).
+\]
+\end{definition}
+
+\begin{proposition}
+Identity is equivalent to a fixed point of the type evolution operator.
+\end{proposition}
+
+\begin{proof}
+Identity invariance requires that the set of admissible continuations defined by $\mathsf{Type}(H_t)$ preserves $\mathcal{I}_d$. Therefore $\mathcal{I}_d$ is invariant under the operator $H_t \mapsto \mathsf{Type}(H_t)$, and thus a fixed point of the induced transformation on predicates over histories.
+\end{proof}
+
+\subsection{Type Expansion and Constraint Refinement}
+
+\begin{proposition}
+Type expansion without constraint refinement leads to inconsistency.
+\end{proposition}
+
+\begin{proof}
+If $\mathsf{Type}(H_t)$ is expanded to include new elements without modifying $\mathcal{C}$, then there exist $\omega \in \mathsf{Type}'(H_t)$ with $\mathcal{C}(H_t \oplus \omega) = 0$, violating the definition of a dependent narrative type.
+\end{proof}
+
+\subsection{The Type Coherence Theorem}
+
+\begin{theorem}[Type Coherence]
+A narrative type system $\mathcal{T}$ ensures global coherence of a compiled self if and only if it is a dependent type system satisfying type preservation, identity invariance, and compatibility with the constraint functional.
+\end{theorem}
+
+\begin{proof}
+(\textit{Necessity.}) Global coherence requires constraint preservation (establishing dependency on history), interface stability (requiring type preservation), and persistence of identity (requiring identity invariance).
+
+(\textit{Sufficiency.}) Every continuation selected from $\mathsf{Type}(H_t)$ preserves $\mathcal{C}$, maintains interface stability, and preserves identity invariants. Hence global coherence is maintained under all admissible extensions.
+\end{proof}
+
+\subsection{Interpretation}
+
+The narrative type system is the locus where identity, constraint, and policy meet. Identity is not stored but enforced: it is a condition on the evolution of types over history. The self persists not because it is represented somewhere, but because every admissible continuation is constrained to preserve it.
+
+Each layer of abstraction can be understood as a type system over the layer below it, enforcing invariants that make higher-level reasoning possible. The compiled self is the fixed point of this process: a system whose type structure is stable under its own evolution.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Log Sovereignty and Append-Only Histories}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+The preceding sections treated history as a formal object without specifying constraints on its persistence. We now introduce log sovereignty: the condition that history is append-only and all admissible evolution occurs through extension rather than modification.
+
+\subsection{Append-Only Structure and Log Sovereignty}
+
+\begin{definition}[Append-Only History]
+A history space $\Omega^*$ is append-only if for all $t$, the only admissible transition from $H_t$ is $H_{t+1} = H_t \oplus \omega_{t+1}$ for some $\omega_{t+1} \in \Omega$.
+\end{definition}
+
+\begin{definition}[Log Sovereignty]
+A system is log-sovereign if its evolution is defined over an append-only history and all constraint evaluation, policy selection, and type assignment depend only on the accumulated log $H_t$.
+\end{definition}
+
+\begin{proposition}
+Log sovereignty implies path dependence of all structural operators.
+\end{proposition}
+
+\begin{proof}
+Since $H_t$ cannot be modified, any two histories differing at any position remain distinct for all future time. Any operator relevant to $\mathcal{C}$, $\mathcal{T}$, or $\pi$ must distinguish between them.
+\end{proof}
+
+\subsection{Irreversibility of Violations}
+
+\begin{proposition}
+Under log sovereignty, constraint violations are irreversible.
+\end{proposition}
+
+\begin{proof}
+If $\mathcal{C}(H_t) = 0$, by append-only structure no operation removes or alters the violating event. No extension $H_{t+k}$ can restore $\mathcal{C}(H_{t+k}) = 1$ without redefining the constraint functional. Hence violation is irreversible within the given system.
+\end{proof}
+
+This strengthens the role of the narrative type system: since violations cannot be undone, admissibility must be enforced strictly at each step.
+
+\subsection{Log-Preserving Encoding}
+
+\begin{definition}[Log-Preserving Encoding]
+An encoding $\mathcal{E}$ is log-preserving if
+\[
+\mathcal{E}(H_t \oplus \omega_{t+1}) = \mathcal{E}(H_t) \oplus \mathcal{E}(\omega_{t+1}),
+\]
+where $\oplus$ on the right denotes concatenation in $\Sigma^*$.
+\end{definition}
+
+\begin{proposition}
+If $\mathcal{E}$ is not log-preserving, the encoded substrate cannot support reconstruction of history.
+\end{proposition}
+
+\begin{proof}
+Without preservation of concatenation, the encoded representation of $H_t \oplus \omega_{t+1}$ does not contain a recoverable representation of $H_t$. Decoding cannot reconstruct the original history sequence, violating condition one of Theorem~\ref{thm:substrate}.
+\end{proof}
+
+\subsection{The Log Sovereignty Theorem}
+
+\begin{theorem}[Log Sovereignty]
+A compiled self maintains identity over time if and only if its history is append-only and all structural operators are defined over the accumulated log.
+\end{theorem}
+
+\begin{proof}
+(\textit{Necessity.}) Modifiable history allows retroactive alteration of identity invariants, and interface stability under projection cannot be guaranteed. If operators do not depend on the full log, path-dependent distinctions may be lost, violating identity preservation.
+
+(\textit{Sufficiency.}) Append-only structure and full-log dependency ensure that identity invariants defined over $H_t$ are preserved under admissible extensions, and interface stability is maintained by projection consistency.
+\end{proof}
+
+\subsection{Interpretation}
+
+The append-only log is not an implementation detail but a structural requirement. It is the substrate on which constraint, policy, and type interact. Narrative matters because the sequence of events is not interchangeable; different sequences leading to similar states are not equivalent. Verification must occur at each step because errors cannot be undone. Encoding must preserve order because without order, history collapses into an unordered set and identity is lost.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Temporal Asymmetry and the First-Person Constraint}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Log sovereignty establishes that histories are append-only and evolution proceeds through irreversible extension. This structural asymmetry induces a distinction between two modes of description that is intrinsic to any compiled self.
+
+\subsection{Two Modes of Access}
+
+A \emph{global} or third-person description treats $H_t$ as a complete object in $\Omega^*$, with all positions equally accessible. A \emph{local} or first-person construction treats $H_t$ as the result of sequential accumulation, accessible only through the prefix $(\omega_1, \dots, \omega_t)$ at time $t$.
+
+\begin{definition}[First-Person Constraint]
+A system satisfies the first-person constraint if all operations available at time $t$ depend only on $H_t$ and do not assume access to any $\omega_{t+k}$ for $k > 0$.
+\end{definition}
+
+\begin{proposition}
+The first-person and third-person descriptions of history are not equivalent under log sovereignty.
+\end{proposition}
+
+\begin{proof}
+There exist operations definable over complete histories in the third-person mode requiring access to future elements not available under the first-person constraint. Therefore the two are not equivalent.
+\end{proof}
+
+\subsection{Constraint-Restricted Accessibility}
+
+Let $\mathcal{M}$ denote the complete model space of all states, and define the accessibility relation at time $t$:
+\[
+\mathcal{A}_t = \{ s \in \mathcal{M} \mid s \text{ is reachable given } H_t \}.
+\]
+Then in general $\mathcal{A}_t \neq \mathcal{M}$, and the accessibility relation is asymmetric: $\mathcal{A}_{t+1} \subseteq \mathcal{A}_t$.
+
+\begin{theorem}[Temporal Asymmetry]
+\label{thm:temporal}
+A system exhibits directed temporal experience if and only if its accessible state space $\mathcal{A}_t$ is strictly decreasing under its update rule.
+\end{theorem}
+
+\begin{proof}
+(\textit{Necessity.}) If $\mathcal{A}_t$ does not decrease, all states remain equally accessible and no distinction between past and future can be constructed.
+
+(\textit{Sufficiency.}) If $\mathcal{A}_{t+1} \subset \mathcal{A}_t$, the system accumulates irreversible exclusions, inducing an ordering on states. This ordering defines a temporal direction.
+\end{proof}
+
+\begin{corollary}
+The experience of a unique present moment arises from the fact that $H_t$ defines a single maximal consistent history and therefore a single accessibility slice $\mathcal{A}_t$.
+\end{corollary}
+
+\begin{corollary}
+Future states are inaccessible because they are elements of $\mathcal{M}$ but not of $\mathcal{A}_t$.
+\end{corollary}
+
+\subsection{The Temporal Constraint Theorem}
+
+\begin{theorem}[Temporal Constraint]
+A compiled self exists only if all structural operators---constraint evaluation, policy selection, and type assignment---are definable under the first-person constraint.
+\end{theorem}
+
+\begin{proof}
+(\textit{Necessity.}) If any operator requires access to future elements, it cannot be executed at time $t$ under append-only dynamics. The system cannot maintain coherence or select admissible continuations, and a compiled self cannot exist.
+
+(\textit{Sufficiency.}) If all operators are first-person, the system can evaluate constraints, determine admissible types, and select continuations based solely on $H_t$ at each time. Combined with log sovereignty and the previous theorems, this ensures coherent extension over time.
+\end{proof}
+
+\subsection{Connection to Temporal Asymmetry in Philosophy of Mind}
+
+The distinction between first-person and third-person perspectives is resolved here in structural rather than ontological terms. The first-person perspective corresponds to operating within $\mathcal{A}_t$; the third-person perspective corresponds to modeling $\mathcal{M}$ directly. Temporal experience is identical to operating under constraint-restricted accessibility. The apparent divide between subjective and objective descriptions is therefore a difference between local constraint history and global symmetry:
+\[
+\text{time} = \text{asymmetry of accessibility}.
+\]
+No additional ontological entity is required. The appearance of a subject is the appearance of a system maintaining the invariant $\Phi_{\mathrm{self}}$ under constraint accumulation.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{The Compiled Self: Main Theorem}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+We now assemble the prior results into the paper's central construction.
+
+\subsection{The Narrative Type System}
+
+\begin{definition}[Compiled Self]
+A compiled self over history $H_t$ is a tuple
+\[
+\mathfrak{S} = (\mathcal{I},\, \mathcal{E},\, \mathcal{D},\, \pi,\, \mathcal{T})
+\]
+where $\mathcal{I}$ is a stable interface, $(\mathcal{E}, \mathcal{D})$ is a coherent encoding-decoding pair, $\pi$ is a viable policy, and $\mathcal{T}$ is a narrative type system consistent with $(\mathcal{I}, \pi, \mathcal{C})$, such that $\pi$ selects from $\mathcal{T}(H_t)$ at each step, $\mathcal{E}$ encodes the resulting history, and $\mathcal{I}$ projects it to a stable interface state.
+\end{definition}
+
+\subsection{No Component Is Redundant}
+
+\begin{lemma}
+Removing any one of $(\mathcal{I},\, \mathcal{E}/\mathcal{D},\, \pi,\, \mathcal{T})$ yields a system that either loses interface stability, collapses generative distinction, fails viability, or admits incoherent continuations.
+\end{lemma}
+
+\begin{proof}
+Without $\mathcal{I}$: arbitrary contradictions accumulate by Theorem~\ref{thm:abstraction}. Without $(\mathcal{E},\mathcal{D})$: histories differing in admissible continuations become indistinguishable by Theorem~\ref{thm:substrate}. Without $\pi$: pure restriction or expansion leads to collapse by Theorem~\ref{thm:policy}. Without $\mathcal{T}$: the policy may select locally admissible but globally identity-destroying transitions, making Theorems~\ref{thm:abstraction} and~\ref{thm:policy} simultaneously unmaintainable.
+\end{proof}
+
+\subsection{The Main Theorem}
+
+\begin{theorem}[The Compiled Self]
+\label{thm:self}
+A compiled self $\mathfrak{S}$ exists over a history $H_t$ if and only if: there exists $\mathcal{C}$ with $\mathcal{C}(H_t) = 1$ for all admissible $t$; there exist $(\mathcal{E}, \mathcal{D})$ preserving generative distinction under $\mathcal{C}$; $\pi$ satisfies constraint preservation and non-collapse; and there exists $\mathcal{T}$ consistent with $(\mathcal{I}, \pi, \mathcal{C})$.
+\end{theorem}
+
+\begin{proof}
+(\textit{Necessity.}) Each component is individually necessary by the preceding lemma.
+
+(\textit{Sufficiency.}) Condition (i) and Theorem~\ref{thm:abstraction} yield $\mathcal{I}$ as the quotient $\Omega^*/{\sim}$. Condition (ii) and Theorem~\ref{thm:substrate} yield a coherent $(\mathcal{E},\mathcal{D})$. Condition (iii) and Theorem~\ref{thm:policy} yield viable $\pi$. Condition (iv) ensures $\pi$ selects from $\mathcal{T}(H_t)$, preserving interface stability and global admissibility at each step. All components are well-defined and mutually consistent.
+\end{proof}
+
+\begin{corollary}
+A Markov generator cannot constitute a compiled self and cannot be extended into one by surface modification alone.
+\end{corollary}
+
+\begin{proof}
+It fails conditions (i), (ii), and (iv). Surface modifications operate entirely within $\Sigma^*$ without introducing $\mathcal{C}$, $\mathcal{D}$, or $\mathcal{T}$.
+\end{proof}
+
+\subsection{RSVP Embedding}
+
+The compiled self has a field-theoretic realization. $\mathcal{I}$ corresponds to a stable configuration of $\Phi(x,t)$ that does not disperse. $(\mathcal{E},\mathcal{D})$ corresponds to transport of structured information along $\mathbf{v}(x,t)$ without destruction of admissible distinction. $\pi$ corresponds to a trajectory maintaining bounded $\int S(x,t)\,dx$ while preserving admissible volume. $\mathcal{T}$ corresponds to the local selection rule keeping the trajectory on the constrained manifold jointly defined by $\Phi$ and $S$. Existence is not a static property but an ongoing achievement of constrained dynamics.
+
+\subsection{Interpretation}
+
+A self is not a substance, process, or narrative in isolation. It is the simultaneous satisfaction of four structural conditions: stable abstraction over constrained history, coherent symbolic transport, viable dynamics over possibility space, and a local selection rule enforcing global admissibility at each step. Generation is not enough; abstraction requires constraint, substrate requires invariant preservation, dynamics require balance, and identity requires a type system enforcing admissibility across time.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Prompting as Field Projection: Categorical and RSVP Formulation}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+We now apply the framework to the practice of constraint-first prompting, showing that it is a structured projection from an internally validated space of constraints into a linguistic rendering manifold.
+
+\subsection{The Category of Internal Structures}
+
+Let $\mathcal{S}$ be a category of internal structures with objects $\omega$ and morphisms $f : \omega \to \omega'$ that are structure-preserving transformations. A distinguished subcategory $\mathcal{S}_{\mathrm{valid}} \subseteq \mathcal{S}$ contains objects satisfying $\mathcal{C}$, established prior to linguistic rendering by derivation, code execution, compilation, or invariant preservation.
+
+\begin{definition}[Prompt Projection Functor]
+The prompt projection functor $\Pi : \mathcal{S}_{\mathrm{valid}} \to \mathcal{L}$ maps each valid internal structure to a linguistic partial object, preserving selected structural relations while discarding others.
+\end{definition}
+
+\begin{proposition}
+$\Pi$ is generally neither faithful nor full.
+\end{proposition}
+
+\begin{proof}[Sketch]
+Non-faithfulness: different internal structures may project to prompts with identical surface form. Non-fullness: many rhetorical variations in $\mathcal{L}$ do not correspond to distinct structural morphisms in $\mathcal{S}_{\mathrm{valid}}$.
+\end{proof}
+
+\subsection{Rendering, Verification, and the Full Pipeline}
+
+The language model induces a stochastic rendering operator $\mathcal{R} : \mathcal{L} \rightsquigarrow \widehat{\mathcal{L}}$ assigning to each prompt a distribution of completions consistent with its learned language manifold. The rendering operator preserves local coherence, not upstream truth.
+
+A rendered output $\hat{\ell}$ is verified if it can be reinterpreted as an object of $\mathcal{S}_{\mathrm{valid}}$ preserving the intended invariants. The full pipeline is:
+\[
+\mathcal{S}_{\mathrm{valid}}
+\xrightarrow{\Pi}
+\mathcal{L}
+\xrightsquigarrow{\mathcal{R}}
+\widehat{\mathcal{L}}
+\xrightarrow{\mathcal{V}}
+\mathcal{S}_{\mathrm{valid}} \cup \{\bot\}.
+\]
+
+\begin{definition}[Constraint-Dominated and Prior-Dominated Prompting]
+An interaction is constraint-dominated if $\Pi(\mathcal{U}_\omega)$ is sufficiently rich that $\mathcal{R}$ remains tethered to the originating coherence region. It is prior-dominated if the projection is too weak, so $\mathcal{R}$ relaxes toward generic manifold attractors.
+\end{definition}
+
+The opening failure case was prior-dominated: the Markov names projected almost no internal structure, and the model defaulted entirely to prior attractors.
+
+\subsection{RSVP Embedding}
+
+The internal structure $\omega$ corresponds to a localized coherent region $\mathcal{U}_\omega \subset X_t$ in which $\Phi$ is high, $\mathbf{v}$ is aligned, and $S$ is suppressed. A prompt is a compressed observable emitted from that region: $\Pi_{\mathrm{RSVP}} : \mathcal{U}_\omega \to p$. The model propagates this trace through its learned attractor geometry. If the trace is rich, the output remains near $\mathcal{U}_\omega$; if impoverished, it drifts toward prior attractors.
+
+\subsection{The Field Projection Theorem}
+
+\begin{theorem}[Prompting as Field Projection]
+\label{thm:prompting}
+Let $\omega \in \mathcal{S}_{\mathrm{valid}}$. Any accepted output $\hat{\ell}$ produced through $\omega \xrightarrow{\Pi} p \xrightsquigarrow{\mathcal{R}} \hat{\ell} \xrightarrow{\mathcal{V}} \omega'$ satisfies the condition that $\omega'$ is structurally constrained by $\omega$, even though $\hat{\ell}$ may include compression, rhetorical amplification, and projection-induced smoothing.
+\end{theorem}
+
+\begin{proof}[Sketch]
+Since $\omega$ is valid prior to projection and acceptance requires reinterpretation through $\mathcal{V}$ into a compatible valid structure, any accepted output must preserve sufficient invariant structure to remain within the admissible neighborhood of the originating object.
+\end{proof}
+
+\subsection{Interpretation}
+
+Prompting is not idea generation. It is field-guided projection from a validated internal structure into language space. The apparent insight of AI-assisted outputs arises because the rendering engine performs high-quality projection-completion over a learned manifold. But the validity, constraint grounding, and epistemic responsibility remain with the agent whose constraint field governed the originating structure. Observers who see only $\hat{\ell}$ may attribute structural organization to the model; the pipeline analysis shows that organization was present upstream before the model was involved.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Provenance Exposure and the Derivation Certificate}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+The rendered output conceals the pipeline that produced it. This section formalizes the problem of provenance exposure and introduces the derivation certificate as the structural object making the internal history legible.
+
+\subsection{The Provenance Problem}
+
+For any observer without access to $\omega$ or $\Pi$, the inference problem is ill-posed: $\mathcal{O}(\hat{\ell}) \not\Rightarrow \omega$. There exists an equivalence class of possible originating structures:
+\[
+[\omega]_{\mathcal{O}} = \{ \omega' \in \mathcal{S} \mid \exists p' : \mathcal{R}(p') = \hat{\ell} \}.
+\]
+
+\begin{proposition}
+The observable output $\hat{\ell}$ does not uniquely determine its originating structure $\omega$.
+\end{proposition}
+
+\begin{proof}
+Follows from the non-faithfulness of $\Pi$ and the many-to-one nature of $\mathcal{R}$.
+\end{proof}
+
+\begin{definition}[Provenance Gap]
+$\Delta(\hat{\ell}) = \dim(\mathcal{U}_\omega) - \dim(\Pi(\mathcal{U}_\omega))$.
+\end{definition}
+
+A theorem has a smaller provenance gap than prose because the formal structure of the statement constrains the space of valid proofs, partially exposing the constraint field.
+
+\subsection{The Derivation Certificate}
+
+\begin{definition}[Derivation Certificate]
+A derivation certificate for $\hat{\ell}$ with originating structure $\omega$ is a tuple
+\[
+\mathcal{K}(\hat{\ell}) = (\omega_{\mathrm{sketch}},\; \mathcal{C}_{\mathrm{explicit}},\; \mathcal{V}_{\mathrm{report}},\; \delta)
+\]
+where $\omega_{\mathrm{sketch}}$ is a compressed representation preserving essential constraints; $\mathcal{C}_{\mathrm{explicit}}$ states the constraints applied, invariants enforced, and failure modes excluded; $\mathcal{V}_{\mathrm{report}}$ records what was checked, rejected, and on what grounds acceptance was granted; and $\delta \in [0,1]$ is a fidelity estimate.
+\end{definition}
+
+\begin{definition}[Structural Author]
+The structural author of $\hat{\ell}$ is the agent whose $\mathcal{C}$ governed $\omega$, whose $\Pi$ determined the prompt, and whose $\mathcal{V}$ controlled acceptance. The rendering operator is not a structural author.
+\end{definition}
+
+\subsection{The Provenance Theorem}
+
+\begin{theorem}[Provenance Completeness]
+A rendered output $\hat{\ell}$ is epistemically attributable to a structural author if and only if a derivation certificate $\mathcal{K}(\hat{\ell})$ satisfying the minimality conditions exists.
+\end{theorem}
+
+\begin{proof}
+(\textit{Necessity.}) If $\hat{\ell}$ is attributable, then $\mathcal{C}$, $\Pi$, and $\mathcal{V}$ are well-defined and applied, so all four components of $\mathcal{K}(\hat{\ell})$ exist.
+
+(\textit{Sufficiency.}) $\omega_{\mathrm{sketch}}$ establishes a constraint-bearing originating structure, $\mathcal{C}_{\mathrm{explicit}}$ establishes upstream validation, $\mathcal{V}_{\mathrm{report}}$ establishes explicit acceptance criteria, and $\delta > 0$ establishes non-trivial fidelity. A structural author therefore exists.
+\end{proof}
+
+\subsection{Interpretation}
+
+Epistemic attributability is not philosophical but structural: it reduces to whether the upstream constraint history was defined and enforced. The constraint-first pipeline produces outputs that carry legible epistemic structure---outputs whose validity can be traced, whose authorship is unambiguous, and whose provenance gap can be bounded rather than left opaque.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{The Self as a Provenance-Stable Interface}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+We now complete the theorem chain by integrating all preceding results into a single canonical object.
+
+\subsection{Interface as a Fixed Point}
+
+\begin{definition}[Interface Fixed Point]
+An interface $\mathcal{I}$ is a fixed point of the structural system if for all admissible histories and admissible extensions,
+\[
+\mathcal{I}(H_t) = \mathcal{I}(H_t') \quad \text{whenever } H_t \sim_{\mathcal{C}} H_t'.
+\]
+\end{definition}
+
+\begin{definition}[Provenance Stability]
+A system is provenance-stable if for all admissible $H_t$, there exists a certificate $\mathcal{K}(H_t)$ such that the structural invariants of $H_t$ are recoverable from $\mathcal{K}(H_t)$ under projection.
+\end{definition}
+
+\begin{definition}[Provenance-Stable Interface]
+A provenance-stable interface is a mapping
+\[
+\mathfrak{S} : \Omega^* \to (\mathcal{S}, \mathcal{K}), \quad \mathfrak{S}(H_t) = (\mathcal{I}(H_t), \mathcal{K}(H_t)),
+\]
+where $\mathcal{I}$ is a stable interface and $\mathcal{K}(H_t)$ preserves structural invariants of $H_t$.
+\end{definition}
+
+\begin{definition}[Self Equivalence]
+Histories $H_t$ and $H_t'$ are self-equivalent if $(\mathcal{I}(H_t), \mathcal{K}(H_t)) = (\mathcal{I}(H_t'), \mathcal{K}(H_t'))$.
+\end{definition}
+
+\begin{proposition}
+Interface equivalence does not imply self equivalence.
+\end{proposition}
+
+\begin{proof}
+Since $\mathcal{I}$ is a projection, it may identify distinct histories. If their derivation certificates differ, the histories are not self-equivalent. Identity at the level of appearance is strictly weaker than identity at the level of structure.
+\end{proof}
+
+\subsection{Closure Under the Theorem Chain}
+
+\begin{theorem}[Self as Provenance-Stable Interface]
+\label{thm:psi}
+A compiled self exists if and only if there exists a provenance-stable interface $\mathfrak{S}$ satisfying the Abstraction, Substrate, Policy, Type Coherence, Log Sovereignty, and Temporal Constraint theorems.
+\end{theorem}
+
+\begin{proof}
+(\textit{Necessity.}) If a compiled self exists, then by Theorem~\ref{thm:self} all components are present. By Log Sovereignty and Temporal Constraint, its history is append-only and all operations are first-person. By Provenance Completeness, derivation certificates exist. Therefore $\mathfrak{S}$ exists.
+
+(\textit{Sufficiency.}) If $\mathfrak{S}$ exists, then $\mathcal{I}$ provides stable abstraction, $\mathcal{K}$ provides recoverable provenance, and their joint existence implies constrained histories, coherent encoding, viable policy, and a type system. All conditions of Theorem~\ref{thm:self} are satisfied.
+\end{proof}
+
+The named invariant is:
+\[
+\Phi_{\mathrm{self}} := \mathrm{Inv}(H_t, \Omega_t, \mathcal{A}_t, \mathcal{P}_t).
+\]
+
+\subsection{Failure Modes}
+
+The absence of any component produces a distinct collapse regime. If $\mathcal{A}_t$ does not decrease, temporal structure disappears. If $\Omega_t = \varnothing$, the system reaches terminal collapse. If $H_t$ is inconsistent, the interface fragments. If $\mathcal{K}$ is absent, the system loses attributable identity. These are not merely theoretical possibilities but observable structural failure modes.
+
+\subsection{Interpretation}
+
+A self is the maximal structure that preserves coherent accessibility under irreversible constraint while remaining externally reconstructible. This completes the theorem chain. Constraint ensures coherence of history. Substrate ensures preservation of generative distinction. Policy ensures viable evolution. Type ensures admissibility of transitions. Log sovereignty ensures irreversibility. Temporal constraint ensures realizability. Provenance ensures interpretability. The resulting object is minimal and complete. Intelligence is the problem of selecting expansion operators that preserve $\Phi_{\mathrm{self}}$ under irreversible constraint.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Comparison with Existing Theories}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+The invariant $\Phi_{\mathrm{self}} = \mathrm{Inv}(H_t, \Omega_t, \mathcal{A}_t, \mathcal{P}_t)$ provides a structural object against which existing theories of mind may be evaluated. Rather than treating them as competing ontologies, we interpret each as a partial projection of this invariant onto a restricted subspace.
+
+\subsection{Functionalism as Projection onto Transition Structure}
+
+Functionalist theories characterize mental states by their role in mediating transitions between inputs, internal states, and outputs, corresponding formally to a focus on the update operator $\mathcal{U} : s_t \mapsto s_{t+1}$.
+
+\begin{proposition}
+Functionalism is equivalent to a projection of $\Phi_{\mathrm{self}}$ onto the transition component $\mathcal{U}$, ignoring $H_t$ and $\mathcal{P}_t$.
+\end{proposition}
+
+As a consequence, functional equivalence does not guarantee identity, since distinct histories may induce identical transition behavior. Two systems that compute the same function may nonetheless differ in the constraint history that produced that function, and this difference is invisible to functionalism.
+
+\subsection{Integrated Information Theory as Projection onto Accessibility Structure}
+
+Integrated Information Theory attempts to quantify the degree to which a system forms a unified whole via measures of informational integration, corresponding structurally to properties of the accessibility slice $\mathcal{A}_t$, particularly its internal connectivity and inseparability.
+
+\begin{proposition}
+IIT corresponds to a projection of $\Phi_{\mathrm{self}}$ onto structural properties of $\mathcal{A}_t$, treating integration as a function of constraint-induced inseparability.
+\end{proposition}
+
+IIT does not explicitly model the evolution of $H_t$ nor the dynamics of $\Omega_t$, and therefore cannot account for temporal asymmetry as arising from irreversible exclusion. It captures a snapshot of accessibility structure but not the process by which that structure was generated.
+
+\subsection{Free Energy Principle as Projection onto Policy Dynamics}
+
+The Free Energy Principle models systems as minimizing a variational bound on surprise, maintaining viability through predictive regulation. This corresponds to dynamics over $\Omega_t$ governed by constraint-sensitive update rules.
+
+\begin{proposition}
+FEP is equivalent to a projection of $\Phi_{\mathrm{self}}$ onto policy dynamics over $\Omega_t$, with viability corresponding to maintaining $\Omega_t \neq \varnothing$ under constraint accumulation.
+\end{proposition}
+
+While FEP captures the necessity of maintaining viable trajectories, it does not formalize provenance $\mathcal{P}_t$ and thus cannot distinguish between internally validated structure and externally indistinguishable output.
+
+\subsection{Temporal Accounts as Accessibility Constraint}
+
+The distinction between first-person and third-person perspectives, as identified in the philosophy of mind literature, is rooted in the asymmetry of time: the first-person perspective has access only to a single present moment while third-person models treat all moments symmetrically. Within the present framework, this corresponds exactly to the difference between operating in $\mathcal{A}_t$ and modeling $\mathcal{M}$.
+
+\begin{proposition}
+Temporal asymmetry in first-person experience is equivalent to the constraint-restricted accessibility condition $\mathcal{A}_{t+1} \subset \mathcal{A}_t$.
+\end{proposition}
+
+Temporal grounding of first-person experience is thus recovered as a structural property of constraint accumulation rather than requiring a separate ontological category.
+
+\subsection{Synthesis}
+
+Each theory captures a necessary but insufficient component of $\Phi_{\mathrm{self}}$. Functionalism projects onto $\mathcal{U}$; IIT projects onto $\mathcal{A}_t$; FEP projects onto $\Omega_t$; temporal accounts project onto $H_t$ via $\mathcal{A}_t$. None independently reconstruct the full invariant. Only their simultaneous inclusion, together with provenance $\mathcal{P}_t$, yields a structure sufficient to sustain identity, temporality, and external legibility. The divergence between existing theories is not due to contradiction but to projection: each selects a subspace of the invariant and elevates it to primacy. The present framework identifies the invariant itself, within which these projections coexist as partial views.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{On the Classification of Expansion Operators}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+The preceding development establishes that persistence of a self depends on maintaining non-empty possibility space $\Omega_t$ under constraint accumulation. The classification of expansion operators defines the forward boundary of the theory: while $\Phi_{\mathrm{self}}$ characterizes what must be preserved, the space of admissible operators characterizes how evolution may proceed.
+
+\subsection{Taxonomy of Expansion Operators}
+
+We classify expansion operators according to the domain in which they act and the structure they preserve.
+
+Symbolic operators act over discrete representational systems such as text, code, or formal expressions, preserving syntactic well-formedness and type constraints. They introduce new expressive capacity by embedding the current symbolic domain into a richer one. Examples include grammatical generation, program synthesis, and formal derivation.
+
+Computational operators act over state-transition systems and algorithmic processes, preserving computability and operational semantics. They introduce new transformations whose admissibility derives from closure properties. Examples include search procedures, simulation steps, and optimization updates.
+
+Semantic operators act over meaning-bearing structures, altering interpretive or conceptual space while preserving coherence of interpretation under a constraint decoder. They restructure constraints so that they become less restrictive without being abandoned, introducing meta-rules that subsume prior rules. Examples include analogy, abstraction, and recontextualization.
+
+Physical operators act over material systems and embodied processes, preserving physical law and resource constraints. They correspond to changes in the material substrate that alter what operations are tractable rather than merely what operations are defined.
+
+\subsection{Cross-Domain Composition}
+
+In general, real systems operate under compositions of these operators:
+\[
+T = T_{\mathrm{phys}} \circ T_{\mathrm{comp}} \circ T_{\mathrm{sym}} \circ T_{\mathrm{sem}}.
+\]
+
+\begin{proposition}
+Coherent evolution requires that composed operators preserve constraint compatibility across all domains.
+\end{proposition}
+
+This introduces the requirement of cross-domain alignment: symbolic expansions must remain semantically interpretable, computational expansions must remain physically realizable, and semantic expansions must remain computationally accessible.
+
+\subsection{Spectral Characterization of Expansion}
+
+Let $\Omega_t$ be embedded in a representational space admitting a spectral decomposition. An expansion operator $T$ induces a transformation on the spectrum:
+\[
+\mathcal{F}(\Omega_{t+1}) = \mathcal{T}(\mathcal{F}(\Omega_t)).
+\]
+
+\begin{definition}[Spectral Signature of Expansion]
+The spectral signature of $T$ is the transformation it induces on the distribution of modes in $\mathcal{F}(\Omega_t)$.
+\end{definition}
+
+Expansive operators tend to introduce higher-frequency components or broaden spectral support; restrictive operators suppress modes or concentrate energy.
+
+\subsection{Expansion Viability Theorem}
+
+\begin{theorem}[Expansion Viability]
+A sequence of expansion operators $(T_t)$ preserves viability if and only if $\Omega_t \neq \varnothing$ for all $t$; $T_t$ remains compatible with $H_t$; and the induced spectral transformations do not collapse diversity below a critical threshold.
+\end{theorem}
+
+\begin{proof}
+Condition one ensures non-terminal evolution. Condition two ensures coherence with accumulated constraints. Condition three ensures the system does not converge to a degenerate attractor under repeated application of $T_t$. Together, these guarantee persistence of a non-trivial possibility space.
+\end{proof}
+
+\subsection{Interpretation}
+
+Expansion operators are the mechanism by which a system avoids collapse under its own constraint accumulation, generating forward structure while respecting past commitments. A complete theory requires not only the identification of invariants but also the classification of transformations that preserve them. The classification presented here is the beginning of that program: a set of structural types whose interaction properties remain to be fully characterized. The most significant open question concerns the conditions under which operators from different domains can be composed without violating cross-domain compatibility, and whether there exist universal expansion operators whose admissibility is domain-independent.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Correspondence and Instantiation Across Real Systems}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+The preceding sections developed a formal structure for constraint, abstraction, substrate, policy, type, and provenance. These objects were introduced abstractly, but they are not confined to abstraction. They appear, often implicitly, in a wide range of real systems. In this section we establish explicit correspondences, showing how the formal components of the framework instantiate in concrete domains. The purpose is not to extend the theory, but to demonstrate that it already governs systems that are independently understood.
+
+\subsection{Instantiation in Programming Languages and Compilers}
+
+A compiled programming language provides a direct instantiation of the framework. The source program corresponds to a history $H_t$ constructed through append-only edits, typically enforced through version control systems that preserve the log of changes. The constraint functional $\mathcal{C}$ is implemented by the type system and the compiler's static checks: a program is admissible if and only if it type-checks and compiles without error.
+
+The interface $\mathcal{I}$ corresponds to the abstract behavior of the program as observed at runtime. Two programs that differ syntactically but compile to equivalent behavior are identified at the interface level, which is precisely the quotient structure described in the Abstraction Theorem.
+
+The encoding-decoding pair $(\mathcal{E}, \mathcal{D})$ is realized by compilation and execution. The compiler encodes high-level structure into a lower-level representation such as bytecode or machine code, and the runtime system decodes it into operational behavior. The Substrate Theorem is instantiated in the requirement that compilation preserve semantic equivalence: distinct programs with distinct behaviors must remain distinguishable after compilation.
+
+Policy $\pi$ appears as the sequence of development decisions---which transformations to apply, which abstractions to introduce, which constraints to enforce. A viable development process must balance restrictive actions such as adding type constraints with expansive actions such as introducing new abstractions or refactoring to increase flexibility.
+
+The narrative type system $\mathcal{T}$ is literally present as the programming language's type system, governing admissible transformations at each step and ensuring that extensions preserve invariants required for correct execution. Provenance is captured through build artifacts, test suites, and version histories. A compiled binary without its source or build process lacks provenance and is difficult to attribute or verify; the derivation certificate corresponds to the combination of source code, compilation logs, and test results that establish correctness \cite{pierce2002,harper2016}.
+
+\subsection{Instantiation in Distributed Systems}
+
+Distributed systems provide a second instantiation in which the append-only log is explicit. Systems maintaining histories as sequences of events $H_t = (\omega_1, \dots, \omega_t)$ implement this structure directly.
+
+The constraint functional $\mathcal{C}$ corresponds to consistency conditions such as invariants on replicated state, causal ordering, or consensus requirements \cite{lamport1978}. Violations lead to incoherent system states that cannot be reconciled. The interface $\mathcal{I}$ corresponds to the externally observable state of the system, often derived from the log through deterministic replay. Interface stability requires that extending the log does not invalidate previously observed states.
+
+The encoding $\mathcal{E}$ is the serialization of events into messages or log entries, and decoding $\mathcal{D}$ is the reconstruction of state through replay. The Substrate Theorem appears as the requirement that the log preserve enough structure to reconstruct state uniquely and distinguish between different event sequences. Policy $\pi$ is implemented through scheduling, conflict resolution, and consensus protocols, which must balance restrictive actions such as rejecting conflicting updates with expansive actions such as merging concurrent operations to preserve availability \cite{gilbert2002}.
+
+Provenance is inherent in this setting: the log itself is a derivation record. Systems that discard or compress logs lose the ability to reconstruct state and verify correctness, illustrating the necessity of provenance stability as a structural rather than optional property.
+
+\subsection{Instantiation in Machine Learning and Language Models}
+
+In machine learning systems, particularly large language models, the framework appears in a more indirect form \cite{vaswani2017,brown2020}.
+
+The internal structure $\omega$ corresponds to a latent representation in embedding space, shaped by training data and model architecture. The constraint functional $\mathcal{C}$ is not explicit but emerges from training objectives and architectural biases, which define what configurations are coherent within the model. The prompt projection $\Pi$ maps an external input into this latent space, selecting a region of the model's learned manifold, while the rendering operator $\mathcal{R}$ corresponds to the model's forward pass.
+
+The substrate is the token sequence space $\Sigma^*$, with encoding and decoding implemented through tokenization and detokenization. The Substrate Theorem manifests in the requirement that tokenization preserve distinctions relevant to model behavior; poorly designed tokenization schemes collapse distinctions and degrade performance.
+
+Policy is implicit in sampling strategies such as temperature, top-$k$, or nucleus sampling, controlling the balance between restrictive and expansive generation. The narrative type system is not explicit in standard models, which explains many observed failure modes: without a type system enforcing admissibility, models may produce outputs that are locally coherent but globally inconsistent. Provenance is largely absent in standard usage, and the framework predicts this as a structural limitation---without provenance exposure, attribution is formally ill-posed.
+
+\subsection{Instantiation in Biological Systems}
+
+Biological systems provide a final instantiation in which the framework operates at a physical level.
+
+The history $H_t$ corresponds to the sequence of biochemical and developmental events leading to the current state of an organism. This history is effectively append-only, as past states cannot be revisited or altered. The constraint functional $\mathcal{C}$ is realized by physical and biochemical laws, as well as regulatory networks that enforce viability conditions; violations correspond to states incompatible with survival.
+
+The interface $\mathcal{I}$ corresponds to the organism's observable phenotype, which remains stable under continuous internal change. Different internal histories that produce the same phenotype are identified at the interface level. The substrate $(\mathcal{E}, \mathcal{D})$ is realized through genetic encoding and cellular processes that interpret genetic information; the preservation of generative distinction corresponds to the fidelity of replication and expression mechanisms.
+
+Policy $\pi$ appears as behavior and adaptation, selecting actions that maintain viability while allowing exploration of new states. The narrative type system $\mathcal{T}$ is instantiated in regulatory networks that determine which state transitions are possible given the current configuration, enforcing constraints that preserve identity at the level of the organism. Provenance is encoded in genetic and epigenetic information as well as the organism's developmental history; while not explicitly represented as a certificate, this information determines how the current state arose and constrains future evolution.
+
+\subsection{Unified Interpretation}
+
+Across all these systems, the same structure appears: a history that is typically append-only, a constraint system enforcing admissibility, a substrate carrying representations that must preserve generative distinction, a policy governing transitions, a type-like structure restricting admissible actions, and a notion of provenance determining how the current state was reached.
+
+The framework does not impose these structures on the systems. It reveals them. Systems that appear different at the surface level share a common architecture at the level of constraint, representation, and evolution. The significance of this correspondence is twofold: it validates the framework by showing that it captures structures already present in well-understood domains, and it provides a language for transferring insights between domains. A failure in one system---loss of provenance, collapse of generative distinction, unconstrained expansion---can be understood and diagnosed using the same concepts that govern failures in another. The theory is not domain-specific; it is a general description of how structured systems maintain coherence, identity, and viability over time.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Conclusion}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+The paper began with a failure and closes with a structured map of what any viable self-maintaining system requires. Between them it established a chain of theorems that does not merely describe the compiled self but formally characterizes the conditions of its possibility.
+
+The Abstraction Theorem showed that stable interfaces require constraint functionals. The Substrate Theorem showed that coherent substrates require paired decoders preserving spectral invariants. The Policy Theorem showed that viable dynamics require a balance of restrictive and expansive operators. The Main Theorem assembled these into a biconditional, showing that a compiled self is exactly the simultaneous satisfaction of all three conditions mediated by a narrative type system. Log Sovereignty established that history must be append-only. The Temporal Constraint Theorem established that all operations must be first-person. The Prompting Theorem showed that constraint-first generation is field projection. The Provenance Completeness Theorem showed that epistemic attributability is equivalent to the existence of a derivation certificate. The culminating theorem identified the self with the invariant $\Phi_{\mathrm{self}} = \mathrm{Inv}(H_t, \Omega_t, \mathcal{A}_t, \mathcal{P}_t)$ under the full theorem chain.
+
+The Markov generator is formally ruled out as a candidate self at every level of this chain. It lacks a constraint functional, a paired decoder, a history, a type system, an append-only log, temporal structure, and provenance. Surface modifications cannot repair these absences because they operate below the level at which the relevant structure lives.
+
+The central claim of the paper may be stated without qualification: generating possibilities is easy; building the abstraction layers that make them coherent, distinct, and usable is the hard problem. Every compiled self---every stable interface, every coherent substrate, every viable policy---is an answer to that hard problem, achieved through the simultaneous enforcement of constraints, the preservation of invariants, and the maintenance of a future that remains open. Intelligence is the selection of expansion operators that preserve $\Phi_{\mathrm{self}}$ under irreversible constraint.
+
+\begin{thebibliography}{99}
+
+\bibitem{putnam1967}
+H.~Putnam,
+``Psychological Predicates,''
+in \emph{Art, Mind, and Religion}, W.~H.~Capitan and D.~D.~Merrill (eds.),
+University of Pittsburgh Press, 1967.
+
+\bibitem{fodor1968}
+J.~A.~Fodor,
+\emph{Psychological Explanation: An Introduction to the Philosophy of Psychology},
+Random House, 1968.
+
+\bibitem{chalmers1995}
+D.~J.~Chalmers,
+``Facing Up to the Problem of Consciousness,''
+\emph{Journal of Consciousness Studies}, vol.~2, no.~3, pp.~200--219, 1995.
+
+\bibitem{tononi2004}
+G.~Tononi,
+``An Information Integration Theory of Consciousness,''
+\emph{BMC Neuroscience}, vol.~5, no.~42, 2004.
+
+\bibitem{oizumi2014}
+M.~Oizumi, L.~Albantakis, and G.~Tononi,
+``From the Phenomenology to the Mechanisms of Consciousness: Integrated Information Theory 3.0,''
+\emph{PLoS Computational Biology}, vol.~10, no.~5, e1003588, 2014.
+
+\bibitem{friston2010}
+K.~Friston,
+``The Free-Energy Principle: A Unified Brain Theory?''
+\emph{Nature Reviews Neuroscience}, vol.~11, pp.~127--138, 2010.
+
+\bibitem{friston2019}
+K.~Friston,
+``A Free Energy Principle for a Particular Physics,''
+\emph{arXiv:1906.10184}, 2019.
+
+\bibitem{landry2017}
+E.~Landry,
+\emph{The Hard Problem},
+Ronin Institute, 2017.
+
+\bibitem{shannon1948}
+C.~E.~Shannon,
+``A Mathematical Theory of Communication,''
+\emph{Bell System Technical Journal}, vol.~27, pp.~379--423, 623--656, 1948.
+
+\bibitem{coverthomas2006}
+T.~M.~Cover and J.~A.~Thomas,
+\emph{Elements of Information Theory},
+2nd ed., Wiley, 2006.
+
+\bibitem{jaynes2003}
+E.~T.~Jaynes,
+\emph{Probability Theory: The Logic of Science},
+Cambridge University Press, 2003.
+
+\bibitem{maclane1998}
+S.~Mac~Lane,
+\emph{Categories for the Working Mathematician},
+2nd ed., Springer, 1998.
+
+\bibitem{awodey2010}
+S.~Awodey,
+\emph{Category Theory},
+2nd ed., Oxford University Press, 2010.
+
+\bibitem{spivak2014}
+D.~I.~Spivak,
+\emph{Category Theory for the Sciences},
+MIT Press, 2014.
+
+\bibitem{riehl2017}
+E.~Riehl,
+\emph{Category Theory in Context},
+Dover, 2017.
+
+\bibitem{cooleytukey1965}
+J.~W.~Cooley and J.~W.~Tukey,
+``An Algorithm for the Machine Calculation of Complex Fourier Series,''
+\emph{Mathematics of Computation}, vol.~19, no.~90, pp.~297--301, 1965.
+
+\bibitem{mallat1999}
+S.~Mallat,
+\emph{A Wavelet Tour of Signal Processing},
+Academic Press, 1999.
+
+\bibitem{kolmogorov1965}
+A.~N.~Kolmogorov,
+``Three Approaches to the Quantitative Definition of Information,''
+\emph{Problems of Information Transmission}, vol.~1, no.~1, pp.~1--7, 1965.
+
+\bibitem{livitanyi2008}
+M.~Li and P.~Vit\'{a}nyi,
+\emph{An Introduction to Kolmogorov Complexity and Its Applications},
+3rd ed., Springer, 2008.
+
+\bibitem{hutter2005}
+M.~Hutter,
+\emph{Universal Artificial Intelligence: Sequential Decisions Based on Algorithmic Probability},
+Springer, 2005.
+
+\bibitem{pearl2009}
+J.~Pearl,
+\emph{Causality: Models, Reasoning, and Inference},
+2nd ed., Cambridge University Press, 2009.
+
+\bibitem{suttonbarto2018}
+R.~S.~Sutton and A.~G.~Barto,
+\emph{Reinforcement Learning: An Introduction},
+2nd ed., MIT Press, 2018.
+
+\bibitem{zurek2003}
+W.~H.~Zurek,
+``Decoherence, Einselection, and the Quantum Origins of the Classical,''
+\emph{Reviews of Modern Physics}, vol.~75, pp.~715--775, 2003.
+
+\bibitem{wheeler1990}
+J.~A.~Wheeler,
+``Information, Physics, Quantum: The Search for Links,''
+in \emph{Complexity, Entropy, and the Physics of Information},
+W.~Zurek (ed.), Addison-Wesley, 1990.
+
+\bibitem{pierce2002}
+B.~C.~Pierce,
+\emph{Types and Programming Languages},
+MIT Press, 2002.
+
+\bibitem{harper2016}
+R.~Harper,
+\emph{Practical Foundations for Programming Languages},
+2nd ed., Cambridge University Press, 2016.
+
+\bibitem{lamport1978}
+L.~Lamport,
+``Time, Clocks, and the Ordering of Events in a Distributed System,''
+\emph{Communications of the ACM}, vol.~21, no.~7, pp.~558--565, 1978.
+
+\bibitem{gilbert2002}
+S.~Gilbert and N.~Lynch,
+``Brewer's Conjecture and the Feasibility of Consistent, Available, Partition-Tolerant Web Services,''
+\emph{ACM SIGACT News}, vol.~33, no.~2, pp.~51--59, 2002.
+
+\bibitem{vaswani2017}
+A.~Vaswani et al.,
+``Attention Is All You Need,''
+\emph{Advances in Neural Information Processing Systems}, 2017.
+
+\bibitem{brown2020}
+T.~B.~Brown et al.,
+``Language Models are Few-Shot Learners,''
+\emph{Advances in Neural Information Processing Systems}, 2020.
+
+\bibitem{markov1913}
+A.~A.~Markov,
+``An Example of Statistical Investigation of the Text Eugene Onegin Concerning the Connection of Samples in Chains,''
+\emph{Izvestiya Akademii Nauk}, 1913.
+
+\bibitem{chomsky1956}
+N.~Chomsky,
+``Three Models for the Description of Language,''
+\emph{IRE Transactions on Information Theory}, vol.~2, no.~3, pp.~113--124, 1956.
+
+\bibitem{turing1936}
+A.~M.~Turing,
+``On Computable Numbers, with an Application to the Entscheidungsproblem,''
+\emph{Proceedings of the London Mathematical Society}, vol.~42, no.~2, pp.~230--265, 1936.
+
+\bibitem{dennett1991}
+D.~C.~Dennett,
+\emph{Consciousness Explained},
+Little, Brown and Company, 1991.
+
+\bibitem{parfit1984}
+D.~Parfit,
+\emph{Reasons and Persons},
+Oxford University Press, 1984.
+
+\bibitem{hofstadter1979}
+D.~R.~Hofstadter,
+\emph{G\"{o}del, Escher, Bach: An Eternal Golden Braid},
+Basic Books, 1979.
+
+\bibitem{goodfellow2016}
+I.~Goodfellow, Y.~Bengio, and A.~Courville,
+\emph{Deep Learning},
+MIT Press, 2016.
+
+\bibitem{friston2005}
+K.~Friston,
+``A Theory of Cortical Responses,''
+\emph{Philosophical Transactions of the Royal Society B}, vol.~360, pp.~815--836, 2005.
+
+\bibitem{strogatz2015}
+S.~H.~Strogatz,
+\emph{Nonlinear Dynamics and Chaos},
+Westview Press, 2015.
+
+\bibitem{katok1997}
+A.~Katok and B.~Hasselblatt,
+\emph{Introduction to the Modern Theory of Dynamical Systems},
+Cambridge University Press, 1997.
+
+\end{thebibliography}
+
+\end{document}
